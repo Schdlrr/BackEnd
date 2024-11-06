@@ -25,11 +25,11 @@ public class SecurityConfig {
 
 
     @Bean
-    private SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 
         return http.csrf(customizer -> customizer.disable())
         .authorizeHttpRequests(request -> request
-        .requestMatchers("signup", "signin")
+        .requestMatchers("/api/user/signup", "api/user/signin")
         .permitAll()
         .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
@@ -38,7 +38,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    private AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         provider.setUserDetailsService(userDetailsService);
@@ -46,7 +46,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    private AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
     }
 
