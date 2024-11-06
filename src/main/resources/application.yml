@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: schdlr
+  datasource:
+    username: 'ErdiSyla'
+    url: jdbc:postgresql://localhost:5500/schdlr
+    password: 'lightweightNoReaction123'
+  jpa:
+    properties:
+      hibernate:
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
