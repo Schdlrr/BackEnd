@@ -3,7 +3,7 @@ package com.schdlr.controller;
 import java.util.List;
 
 import com.schdlr.model.ResponseObject;
-import com.schdlr.model.User;
+import com.schdlr.model.SchdlrUser;
 import com.schdlr.service.UserManagmentService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,17 +23,17 @@ public class UserManagmentController {
     }
 
     @GetMapping
-    public List<User> getUsers(){
+    public List<SchdlrUser> getUsers(){
         return service.getUsers();
     }
 
     @PostMapping("/signup")
-    public ResponseObject userSignUp(@RequestBody User user){
+    public ResponseObject userSignUp(@RequestBody SchdlrUser user){
        return service.userSignUp(user);
     }
 
     @PostMapping("/signin")
-    public ResponseObject userSignIn(@RequestBody User user){
+    public ResponseObject userSignIn(@RequestBody SchdlrUser user){
         return service.userSignIn(user);
     }
 }

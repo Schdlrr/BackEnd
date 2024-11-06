@@ -2,17 +2,17 @@ package com.schdlr.repo;
 
 import java.util.Optional;
 
-import com.schdlr.model.User;
+import com.schdlr.model.SchdlrUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserManagmentRepo extends JpaRepository<User,Integer>{
+public interface UserManagmentRepo extends JpaRepository<SchdlrUser,Integer>{
 
-    Optional<User> findByUsername(String username);
+    Optional<SchdlrUser> findByUserName(String userName);
 
-    User findByPassword(String password);
+    SchdlrUser findByPassword(String password);
 
 
 

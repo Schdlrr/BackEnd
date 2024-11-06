@@ -3,7 +3,7 @@ package com.schdlr.service;
 
 import java.util.Optional;
 
-import com.schdlr.model.User;
+import com.schdlr.model.SchdlrUser;
 import com.schdlr.model.UserPrincipal;
 import com.schdlr.repo.UserManagmentRepo;
 
@@ -24,7 +24,7 @@ public class UserDetailsConfigService  implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        Optional<User> user = userManagmentRepo.findByUsername(username);
+        Optional<SchdlrUser> user = userManagmentRepo.findByUserName(username);
 
         if(!user.isPresent()){
             System.out.println("User not found");
