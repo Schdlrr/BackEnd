@@ -11,7 +11,7 @@ services:
     ports:
       - "5500:5432"
     networks:
-      - postgres
+      - schdlr_postgres
     restart: unless-stopped
 
   pgadmin:
@@ -23,15 +23,25 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin:/var/lib/pgadmin
-
     ports:
       - "5050:80"
     networks:
-      - postgres
+      - schdlr_postgres
+    restart: unless-stopped
+
+  schdlr-app:
+    container_name: schdlr-app
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - schdlr_postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/schdlr
     restart: unless-stopped
 
 networks:
-  postgres:
+  schdlr_postgres:
     driver: bridge
 
 volumes:
