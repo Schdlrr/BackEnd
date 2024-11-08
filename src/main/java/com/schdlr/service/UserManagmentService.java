@@ -2,6 +2,7 @@ package com.schdlr.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import com.schdlr.model.ResponseObject;
 import com.schdlr.model.SchdlrUser;
@@ -13,7 +14,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserManagmentService {
 
-    private UserManagmentRepo repo;
+    private UserManagmentRepo repo; 
+
+    String combinedRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" + "|" + "\\+383 (045|044)\\d{6}";
+
+    Pattern pattern =Pattern.compile(combinedRegex);
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     
@@ -22,7 +27,8 @@ public class UserManagmentService {
     }
 
     public ResponseObject userSignUp(SchdlrUser user) {
-        if (repo.findByUserName(user.getUserName()).isPresent()) {
+        if (repo.findByUserName(user.getUserName()).isPresent()
+        || pattern.matcher(user.getContactInfo()).matches()){
             return ResponseObject.Unsuccessful;
         }
         user.setPassword(encoder.encode(user.getPassword()));
