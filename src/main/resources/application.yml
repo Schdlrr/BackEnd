@@ -6,7 +6,7 @@ spring:
     name: schdlr
   datasource:
     username: 'ErdiSyla'
-    url: jdbc:postgresql://localhost:5500/schdlr
+    url: jdbc:postgresql://postgres:5432/schdlr
     password: 'lightweightNoReaction123'
   jpa:
     properties:
