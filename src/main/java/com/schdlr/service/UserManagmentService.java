@@ -34,6 +34,7 @@ public class UserManagmentService {
         }else if(usedContactInfo(user)){
             return new UserInfoObject(ResponseObject.Unsuccessful, "User with the same contact info already exists.Change contact info or login and choose to forget password");
         }else{
+            user.setPassword(encoder.encode(user.getPassword()));
             repo.save(user);
             return new UserInfoObject(ResponseObject.Successful,user.getUserName());
         }
