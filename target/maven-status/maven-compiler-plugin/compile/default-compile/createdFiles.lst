@@ -1,10 +1,11 @@
-com\schdlr\model\SchdlrUser.class
 com\schdlr\repo\UserManagmentRepo.class
 com\schdlr\SchdlrApplication.class
-com\schdlr\service\UserDetailsConfigService.class
 com\schdlr\service\UserManagmentService.class
 com\schdlr\model\ResponseObject.class
-com\schdlr\model\UserPrincipal.class
-com\schdlr\controller\UserManagmentController.class
 com\schdlr\config\SecurityConfig.class
 com\schdlr\model\UserInfoObject.class
+com\schdlr\model\SchdlrUser.class
+com\schdlr\service\UserDetailsConfigService.class
+com\schdlr\config\SecurityConfig$1.class
+com\schdlr\model\UserPrincipal.class
+com\schdlr\controller\UserManagmentController.class
