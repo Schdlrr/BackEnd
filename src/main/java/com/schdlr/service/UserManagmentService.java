@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 
 import com.schdlr.model.ResponseObject;
 import com.schdlr.model.SchdlrUser;
+import com.schdlr.model.UserInfoObject;
 import com.schdlr.repo.UserManagmentRepo;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,26 +26,26 @@ public class UserManagmentService {
         this.repo = repo;
     }
 
-    public ResponseObject userSignUp(SchdlrUser user) {
-        if (repo.findByUserName(user.getUserName()).isPresent()
-        || pattern.matcher(user.getContactInfo()).matches()){
-            return ResponseObject.Unsuccessful;
+    public UserInfoObject userSignUp(SchdlrUser user) {
+        if(repo.findByUserName(user.getUserName()) != null || 
+        !pattern.matcher(user.getContactInfo()).matches()){
+            return new UserInfoObject(ResponseObject.Unsuccessful, "User already found in database");
+        }else{
+            return new UserInfoObject(ResponseObject.Successful, user.getUserName());
         }
-        user.setPassword(encoder.encode(user.getPassword()));
-        repo.save(user);
-        return ResponseObject.Successful;
         }
 
     public List<SchdlrUser> getUsers() {
         return repo.findAll();
     }
 
-    public ResponseObject userSignIn(SchdlrUser user) {
+    public UserInfoObject userSignIn(SchdlrUser user) {
     Optional<SchdlrUser> existingUser = repo.findByUserName(user.getUserName());
         if (existingUser.isPresent() && encoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-            return ResponseObject.Successful;
+            return new UserInfoObject(ResponseObject.Successful, user.getUserName());
         } else {
-            return ResponseObject.Unsuccessful;
+            return new UserInfoObject(ResponseObject.Unsuccessful, "Login credentials do not match any user"
+            + ",Try again");
         }
     }
     }

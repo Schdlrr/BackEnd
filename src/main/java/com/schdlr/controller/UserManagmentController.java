@@ -1,12 +1,8 @@
 package com.schdlr.controller;
 
-import java.util.List;
-
-import com.schdlr.model.ResponseObject;
 import com.schdlr.model.SchdlrUser;
+import com.schdlr.model.UserInfoObject;
 import com.schdlr.service.UserManagmentService;
-
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,18 +18,15 @@ public class UserManagmentController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<SchdlrUser> getUsers(){
-        return service.getUsers();
-    }
-
     @PostMapping("/signup")
-    public ResponseObject userSignUp(@RequestBody SchdlrUser user){
-       return service.userSignUp(user);
+    public UserInfoObject userSignUp(@RequestBody SchdlrUser user){
+       UserInfoObject UIO = service.userSignUp(user);
+       return UIO;
     }
 
     @PostMapping("/signin")
-    public ResponseObject userSignIn(@RequestBody SchdlrUser user){
-        return service.userSignIn(user);
+    public  UserInfoObject userSignIn(@RequestBody SchdlrUser user){
+       UserInfoObject UIO = service.userSignUp(user);
+       return UIO;
     }
 }
