@@ -16,7 +16,7 @@ public class UserManagmentService {
 
     private UserManagmentRepo repo; 
 
-    String combinedRegex = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}" + "|" + "\\+383 (045|044)\\d{6}";
+    String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{3}$|^\\+383(44|45)\\d{6}$";
 
     Pattern pattern =Pattern.compile(combinedRegex);
 
@@ -27,12 +27,16 @@ public class UserManagmentService {
     }
 
     public UserInfoObject userSignUp(SchdlrUser user) {
-        if(repo.findByUserName(user.getUserName()) != null || 
-        !pattern.matcher(user.getContactInfo()).matches()){
-            return new UserInfoObject(ResponseObject.Unsuccessful, "User already found in database");
+        if(isExistingUser(user)){
+            return new UserInfoObject(ResponseObject.Unsuccessful, "User with the same username already exists.Pick a different username");
+        }else if(!isValidContactInfo(user)){
+            return new UserInfoObject(ResponseObject.Unsuccessful, "Non valid contact info enterd.Please change contact info");
+        }else if(usedContactInfo(user)){
+            return new UserInfoObject(ResponseObject.Unsuccessful, "User with the same contact info already exists.Change contact info or login and choose to forget password");
         }else{
-            return new UserInfoObject(ResponseObject.Successful, user.getUserName());
+            return new UserInfoObject(ResponseObject.Successful,user.getUserName());
         }
+        
         }
 
     public List<SchdlrUser> getUsers() {
@@ -40,7 +44,7 @@ public class UserManagmentService {
     }
 
     public UserInfoObject userSignIn(SchdlrUser user) {
-    Optional<SchdlrUser> existingUser = repo.findByUserName(user.getUserName());
+        Optional<SchdlrUser> existingUser = repo.findByUserName(user.getUserName());
         if (existingUser.isPresent() && encoder.matches(user.getPassword(), existingUser.get().getPassword())) {
             return new UserInfoObject(ResponseObject.Successful, user.getUserName());
         } else {
@@ -48,4 +52,17 @@ public class UserManagmentService {
             + ",Try again");
         }
     }
+
+    public boolean isExistingUser(SchdlrUser user){
+        return repo.findByUserName(user.getUserName()).isPresent();
+    }
+
+    public boolean isValidContactInfo(SchdlrUser user){
+        return pattern.matcher(user.getContactInfo()).matches();
+    }
+
+    public boolean usedContactInfo(SchdlrUser user){
+        return repo.findByContactInfo(user.getContactInfo()).isPresent();
+    }
+
     }

@@ -26,7 +26,7 @@ public class UserManagmentController {
 
     @PostMapping("/signin")
     public  UserInfoObject userSignIn(@RequestBody SchdlrUser user){
-       UserInfoObject UIO = service.userSignUp(user);
+       UserInfoObject UIO = service.userSignIn(user);
        return UIO;
     }
 }

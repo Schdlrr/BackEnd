@@ -7,3 +7,4 @@ com\schdlr\model\ResponseObject.class
 com\schdlr\model\UserPrincipal.class
 com\schdlr\controller\UserManagmentController.class
 com\schdlr\config\SecurityConfig.class
+com\schdlr\model\UserInfoObject.class
