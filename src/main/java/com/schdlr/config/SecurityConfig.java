@@ -31,11 +31,15 @@ public class SecurityConfig {
 
         return http.csrf(customizer -> customizer.disable())
         .authorizeHttpRequests(request -> request
-        .requestMatchers("/api/user/signup", "/api/user/signin")
+        .requestMatchers("/api/user/signup", "/api/user/signin", "/api/user/"
+        ,"/swagger-ui/**","/v3/api-docs/**")
         .permitAll()
         .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.sameOrigin())
+            )
         .build();
     }
 
