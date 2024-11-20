@@ -1,13 +1,10 @@
 package com.schdlr.service;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
-
-import com.schdlr.model.ResponseObject;
 import com.schdlr.model.SchdlrUser;
-import com.schdlr.model.UserInfoObject;
 import com.schdlr.repo.UserManagmentRepo;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,32 +23,27 @@ public class UserManagmentService {
         this.repo = repo;
     }
 
-    public UserInfoObject userSignUp(SchdlrUser user) {
+    public ResponseEntity<String> userSignUp(SchdlrUser user) {
         if(isExistingUser(user)){
-            return new UserInfoObject(ResponseObject.Unsuccessful, "User with the same username already exists.Pick a different username");
+            return new ResponseEntity<>("User with the same username is already registered",HttpStatus.NOT_ACCEPTABLE);
         }else if(!isValidContactInfo(user)){
-            return new UserInfoObject(ResponseObject.Unsuccessful, "Non valid contact info enterd.Please change contact info");
+            return new ResponseEntity<>("Non valid contact info enterd.Please change contact info",HttpStatus.METHOD_NOT_ALLOWED);
         }else if(usedContactInfo(user)){
-            return new UserInfoObject(ResponseObject.Unsuccessful, "User with the same contact info already exists.Change contact info or login and choose to forget password");
+            return new ResponseEntity<>("Contact info is already used by another user. Please try to sign up with another kind of contact info",HttpStatus.CONFLICT);
         }else{
             user.setPassword(encoder.encode(user.getPassword()));
             repo.save(user);
-            return new UserInfoObject(ResponseObject.Successful,user.getUserName());
+            return new ResponseEntity<>(user.getUserName(),HttpStatus.CREATED);
         }
         
         }
 
-    public List<SchdlrUser> getUsers() {
-        return repo.findAll();
-    }
-
-    public UserInfoObject userSignIn(SchdlrUser user) {
-        Optional<SchdlrUser> existingUser = repo.findByUserName(user.getUserName());
-        if (existingUser.isPresent() && encoder.matches(user.getPassword(), existingUser.get().getPassword())) {
-            return new UserInfoObject(ResponseObject.Successful, user.getUserName());
+    public ResponseEntity<String> userSignIn(SchdlrUser user) {
+        boolean isExistingUser = isExistingUser(user);
+        if (isExistingUser && encoder.matches(user.getPassword(), getUserByUserName(user.getUserName()).getPassword())) {
+            return new ResponseEntity<>(user.getUserName(),HttpStatus.ACCEPTED);
         } else {
-            return new UserInfoObject(ResponseObject.Unsuccessful, "Login credentials do not match any user"
-            + ",Try again");
+            return new ResponseEntity<>("The credentials that were used do not match to any user please try again",HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -65,6 +57,10 @@ public class UserManagmentService {
 
     public boolean usedContactInfo(SchdlrUser user){
         return repo.findByContactInfo(user.getContactInfo()).isPresent();
+    }
+
+    public SchdlrUser getUserByUserName(String userName){
+        return repo.findByUserName(userName).get();
     }
 
     }

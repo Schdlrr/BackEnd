@@ -3,9 +3,9 @@ package com.schdlr.controller;
 import java.io.IOException;
 
 import com.schdlr.model.SchdlrUser;
-import com.schdlr.model.UserInfoObject;
 import com.schdlr.service.UserManagmentService;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,14 +34,12 @@ public class UserManagmentController {
     }
     
     @PostMapping("/signup")
-    public UserInfoObject userSignUp(@RequestBody SchdlrUser user){
-       UserInfoObject UIO = service.userSignUp(user);
-       return UIO;
+    public ResponseEntity<String> userSignUp(@RequestBody SchdlrUser user){
+        return service.userSignUp(user);
     }
 
     @PostMapping("/signin")
-    public  UserInfoObject userSignIn(@RequestBody SchdlrUser user){
-       UserInfoObject UIO = service.userSignIn(user);
-       return UIO;
+    public  ResponseEntity<String> userSignIn(@RequestBody SchdlrUser user){
+       return service.userSignIn(user);
     }
 }
