@@ -13,13 +13,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class SchdlrUser {
+public class SignedUpUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     @SequenceGenerator(name = "user_sequence", sequenceName = "user_seq")
     private Integer id;
     private String userName;
-    private String contactInfo;
+    private String email;
+    private String number;
     private String password;
 }

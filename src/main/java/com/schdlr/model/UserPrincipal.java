@@ -2,16 +2,19 @@ package com.schdlr.model;
 
 import java.util.Collection;
 
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collections;
 
+import com.schdlr.model.SignedUpUser;
+
 public class UserPrincipal implements UserDetails{
 
-    private SchdlrUser user;
+    private SignedUpUser user;
 
-    public UserPrincipal(SchdlrUser user) {
+    public UserPrincipal(SignedUpUser user) {
         this.user = user;
     }
 

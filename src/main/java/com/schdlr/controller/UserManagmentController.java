@@ -2,7 +2,7 @@ package com.schdlr.controller;
 
 import java.io.IOException;
 
-import com.schdlr.model.SchdlrUser;
+import com.schdlr.model.SignedUpUser;
 import com.schdlr.service.UserManagmentService;
 
 import org.springframework.http.ResponseEntity;
@@ -34,12 +34,12 @@ public class UserManagmentController {
     }
     
     @PostMapping("/signup")
-    public ResponseEntity<String> userSignUp(@RequestBody SchdlrUser user){
+    public ResponseEntity<String> userSignUp(@RequestBody SignedUpUser user){
         return service.userSignUp(user);
     }
 
     @PostMapping("/signin")
-    public  ResponseEntity<String> userSignIn(@RequestBody SchdlrUser user){
+    public  ResponseEntity<String> userSignIn(@RequestBody SignedUpUser user){
        return service.userSignIn(user);
     }
 }
