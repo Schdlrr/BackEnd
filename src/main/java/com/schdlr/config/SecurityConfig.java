@@ -35,7 +35,7 @@ public class SecurityConfig {
         ,"/swagger-ui/**","/v3/api-docs/**")
         .permitAll()
         .anyRequest().authenticated())
-        .httpBasic(Customizer.withDefaults())
+        .httpBasic(customizer -> customizer.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
