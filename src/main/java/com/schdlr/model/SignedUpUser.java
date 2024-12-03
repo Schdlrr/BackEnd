@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class SignedUpUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
-    @SequenceGenerator(name = "user_sequence", sequenceName = "user_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signed_up_user_sequence")
+    @SequenceGenerator(name = "signed_up_user_sequence", sequenceName = "signed_up_user_seq")
     private Integer id;
     private String userName;
     private String email;

@@ -68,7 +68,8 @@ public class UserManagmentService {
 
     public ResponseEntity<String> userSignIn(SignedUpUser user) {
         boolean usedEmail = usedEmail(user);
-        if (usedEmail && encoder.matches(user.getPassword(), getUserByUserName(user.getUserName()).getPassword())) {
+        SignedUpUser dbUser = repo.findByEmail(user.getEmail()).get();
+        if (usedEmail && encoder.matches(user.getPassword(),dbUser.getPassword())) {
             return new ResponseEntity<>(user.getUserName(),HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>("The credentials that were used do not match to any user please try again",HttpStatus.UNAUTHORIZED);
