@@ -1,10 +1,8 @@
 package com.schdlr.repo;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import com.schdlr.model.KeyActivity;
 import com.schdlr.model.TokenKey;
 
 import org.springframework.data.jpa.repository.JpaRepository;
