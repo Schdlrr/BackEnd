@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -25,6 +26,8 @@ public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
 
+    private JWTFilter jwtFilter;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -32,10 +35,11 @@ public class SecurityConfig {
         return http.csrf(customizer -> customizer.disable())
         .authorizeHttpRequests(request -> request
         .requestMatchers("/api/user/signup", "/api/user/signin", "/api/user/"
-        ,"/swagger-ui/**","/v3/api-docs/**")
+        ,"/swagger-ui/**","/v3/api-docs/**","/api/user/refresh-token")
         .permitAll()
         .anyRequest().authenticated())
-        .httpBasic(customizer -> customizer.disable())
+        .httpBasic(Customizer.withDefaults())
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())

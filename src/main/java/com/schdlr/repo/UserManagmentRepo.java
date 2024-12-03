@@ -13,7 +13,7 @@ public interface UserManagmentRepo extends JpaRepository<SignedUpUser,Integer>{
 
     Optional<SignedUpUser> findByUserName(String userName);
 
-    Optional<SignedUpUser> findByContactInfo(String contactInfo);
+    Optional<SignedUpUser> findByEmail(String email);
 
 
 }
