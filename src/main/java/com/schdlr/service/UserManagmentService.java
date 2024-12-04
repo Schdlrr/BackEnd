@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 import com.schdlr.model.SignedUpUser;
 import com.schdlr.repo.UserManagmentRepo;
+import com.schdlr.util.PasswordEncoderUtil;
 import com.schdlr.util.TokenAndCookiesUtil;
 
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class UserManagmentService {
 
     Pattern pattern =Pattern.compile(combinedRegex);
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private BCryptPasswordEncoder encoder = PasswordEncoderUtil.getInstance();
     
     public UserManagmentService(UserManagmentRepo repo, TokenAndCookiesUtil tokenAndCookiesUtil
     ,JWTService jwtService){

@@ -50,33 +50,15 @@ public class UserManagmentController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> signIn(@RequestBody SignedUpUser user, HttpServletResponse response,
+    public ResponseEntity<String> userSignIn(@RequestBody SignedUpUser user, HttpServletResponse response,
             HttpServletRequest request) {
-
         String username = user.getUserName();
-
-        String existingAccessToken = tokenAndCookiesUtil.getCookie(request, "accessToken");
-        String existingRefreshToken = tokenAndCookiesUtil.getCookie(request, "refreshToken");
-
-        if (existingAccessToken != null && existingRefreshToken != null) {
-            try {
-                String s1 = service.verify(request, response);
-
-                if (s1.equals(username)) {
-                    return service.userSignIn(user);
-                }
-            } catch (NoSuchAlgorithmException e) {
-                System.out.println("NoSuchAlgorithm bucko");
-            } catch (InvalidKeySpecException w) {
-                System.out.println("Wrong key spec");
-            }
-        }
         try {
             String refreshToken = jwtService.generateRefreshToken(username);
             String accessToken = jwtService.generateAccessToken(username);
             tokenAndCookiesUtil.addCookie(response, "accessToken", accessToken, 30 * 60, true, false, "Strict");
             tokenAndCookiesUtil.addCookie(response, "refreshToken", refreshToken, 30 * 24 * 60 * 60, true, false,
-                    "Strict"); // 30 days expiration
+                    "Strict");
         } catch (NoSuchAlgorithmException e) {
             System.out.println("NoSuchAlgorithm bucko");
         } catch (InvalidKeySpecException w) {
@@ -89,13 +71,23 @@ public class UserManagmentController {
     @PostMapping("/refresh-token")
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
-        String s = service.verify(request, response);
-        if (s.startsWith("Out of use refresh token")) {
-            return new ResponseEntity<>(s, HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(s, HttpStatus.OK);
-        }
 
+        String existingRefreshToken = tokenAndCookiesUtil.extractTokenFromCookies(request, "refreshToken");
+
+        if (existingRefreshToken != null) {
+            try {
+                String s1 = service.verify(request, response);
+
+                if (s1.equals(jwtService.extractUsername(existingRefreshToken))) {
+                    return new ResponseEntity<>(s1, HttpStatus.ACCEPTED);
+                }
+            } catch (NoSuchAlgorithmException e) {
+                System.out.println("NoSuchAlgorithm bucko");
+            } catch (InvalidKeySpecException w) {
+                System.out.println("Wrong key spec");
+            }
+        }
+        return new ResponseEntity<>("Refresh token is invalid. User needs to sign in", HttpStatus.BAD_REQUEST);
     }
 
 }

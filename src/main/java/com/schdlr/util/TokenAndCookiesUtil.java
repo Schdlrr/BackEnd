@@ -18,7 +18,7 @@ public class TokenAndCookiesUtil {
             }
         }
     }
-    return null; // Return null if the cookie is not found
+    return null;
 }
 
 
@@ -37,14 +37,5 @@ public class TokenAndCookiesUtil {
         }
     
         response.addHeader("Set-Cookie", cookie.toString());
-    }
-    public String getCookie(HttpServletRequest request, String name) {
-        if (request.getCookies() == null) return null;
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals(name)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 }
