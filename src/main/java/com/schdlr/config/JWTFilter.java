@@ -20,56 +20,103 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/*
+ * JWTFilter is a custom filter that intercepts incoming HTTP requests
+ * to validate and process JSON Web Tokens (JWTs) for authentication.
+ * 
+ * This filter:
+ * - Excludes certain paths from JWT validation (e.g., login and signup
+ * endpoints).
+ * - Extracts the JWT from cookies in the request.
+ * - Validates the token and sets the security context if valid.
+ * 
+ * Extends OncePerRequestFilter to ensure it is executed once per request.
+ */
 @Component
-public class JWTFilter extends OncePerRequestFilter{
+public class JWTFilter extends OncePerRequestFilter {
 
+    // Service responsible for handling JWT operations like extraction and
+    // validation
     private JWTService jwtService;
 
+    // Spring's application context for dynamically retrieving beans
     private ApplicationContext applicationContext;
 
-    public JWTFilter(JWTService jwtService, ApplicationContext applicationContext){
+    /*
+     * jwtService - Service for handling JWT-related operations.
+     * applicationContext - Spring application context for accessing beans.
+     */
+    public JWTFilter(JWTService jwtService, ApplicationContext applicationContext) {
         this.jwtService = jwtService;
         this.applicationContext = applicationContext;
 
     }
 
+    /*
+     * Core filtering logic for processing JWT authentication.
+     * 
+     * request - The HTTP request object.
+     * response - The HTTP response object.
+     * filterChain - The filter chain to pass the request/response to the next
+     * filter.
+     * ServletException - If a servlet error occurs.
+     * IOException - If an I/O error occurs during filtering.
+     * 
+     * Logic:
+     * - Skips processing for excluded paths.
+     * - Extracts JWT from cookies and validates it.
+     * - Sets the authenticated user in the security context if the token is valid.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String[] excludedPaths = { "/api/user/signin", "/api/user/signup", "/api/user/refresh-token"};
+        // Define paths that should bypass JWT validation (endpoints that should be
+        // accessible to all users)
+        String[] excludedPaths = { "/api/user/signin", "/api/user/signup", "/api/user/refresh-token" };
 
         String requestURI = request.getRequestURI();
 
-        // Skip JWT processing if the request URI matches an excluded path
         for (String path : excludedPaths) {
             if (requestURI.startsWith(path)) {
                 filterChain.doFilter(request, response); // Continue without filtering
                 return;
             }
         }
+
         String token = jwtService.extractTokenFromCookies(request, "accessToken");
-        String username;
+        String email;
         if (token != null) {
             try {
-                username = jwtService.extractUsername(token);
 
-                if (username != null
+                email = jwtService.extractEmail(token);
+
+                // If email exists and no authentication is currently set, proceed
+                if (email != null
                         && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                            UserDetails userDetails = applicationContext.getBean(UserDetailsConfigService.class).loadUserByUsername(username);
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    // Retrieve user details from the UserDetailsConfigService bean
+                    UserDetails userDetails = applicationContext.getBean(UserDetailsConfigService.class)
+                            .loadUserByEmail(email);
+
+                    if (jwtService.authenticateToken(token)) {
+                        // Create an authentication token using the retrieved user details
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+
+                        // Attach additional request-specific detail
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                        // Set the authentication token in the security context
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 e.printStackTrace();
             }
         }
+        // Continue with the filter chain
         filterChain.doFilter(request, response);
     }
 
-    
-
-} 
+}

@@ -1,5 +1,5 @@
-# Use an official OpenJDK 21 slim image as the base
-FROM openjdk:21-jdk-slim
+# Use an official OpenJDK 21 slim-buster image as the base
+FROM openjdk:21-slim-buster
 
 # Set the working directory in the container
 WORKDIR /Schdlr

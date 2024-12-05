@@ -10,16 +10,37 @@ import java.util.Collections;
 
 import com.schdlr.model.SignedUpUser;
 
+/*
+ * UserPrincipal is an implementation of UserDetails used by Spring Security.
+ * It encapsulates user details required for authentication and authorization.
+ * 
+ * Annotations:
+ * None (relies on Spring Security interface).
+ * 
+ * Responsibilities:
+ * - Provide user-specific details such as username, password, and authorities.
+ * - Indicate account status (non-expired, non-locked, etc.).
+ * 
+ * Fields:
+ * - `user`: The signed-up user whose details are encapsulated.
+ */
+
 public class UserPrincipal implements UserDetails{
 
     private SignedUpUser user;
 
+    /*
+     * Constructor to initialize UserPrincipal with a SignedUpUser.
+     * 
+     * user - The signed-up user entity.
+     */
     public UserPrincipal(SignedUpUser user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+         // Grants a single authority "USER" to the user
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
     }
 

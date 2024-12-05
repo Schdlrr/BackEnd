@@ -38,6 +38,8 @@ services:
       - schdlr_postgres
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/schdlr
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     restart: unless-stopped
 
 networks:
