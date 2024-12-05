@@ -1,3 +1,4 @@
+© 2024 Erdi Syla
 # Barber scheduling app
 An application for reserving barber appointments. Users can sign-up and sign-in with their personal credentials or JWT.
 

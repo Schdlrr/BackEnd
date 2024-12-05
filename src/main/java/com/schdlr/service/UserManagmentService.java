@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import com.schdlr.model.SignedUpUser;
 import com.schdlr.repo.UserManagmentRepo;
 import com.schdlr.util.PasswordEncoderUtil;
-import com.schdlr.util.TokenAndCookiesUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,6 @@ public class UserManagmentService {
 
     private UserManagmentRepo repo; 
 
-    private TokenAndCookiesUtil tokenAndCookiesUtil;
-
     private final JWTService jwtService;
 
     // Password encoder instance
@@ -35,10 +32,9 @@ public class UserManagmentService {
      * tokenAndCookiesUtil-Utility for token and cookie operations.
      * jwtService Service-for handling JWT operations.
      */
-    public UserManagmentService(UserManagmentRepo repo, TokenAndCookiesUtil tokenAndCookiesUtil
+    public UserManagmentService(UserManagmentRepo repo
     ,JWTService jwtService){
         this.repo = repo;
-        this.tokenAndCookiesUtil = tokenAndCookiesUtil;
         this.jwtService = jwtService;
     }
 
