@@ -123,7 +123,7 @@ public class UserManagmentController {
             tokenAndCookiesUtil.addCookie(response, "refreshToken", refreshToken, 30 * 24 * 60 * 60, true, false,
                     "Strict");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithm bucko");
+            System.out.println("NoSuchAlgorithm exists");
         } catch (InvalidKeySpecException w) {
             System.out.println("Wrong key spec");
         }

@@ -6,6 +6,16 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+/*
+ * TokenKeyGen handles API requests TokenKey creation.
+ * 
+ * Responsibilities:
+ * - Creating pairs of RSA keys.
+ * - Encoding the keys to string
+ * 
+ * Annotations:
+ * - @Service: Marks this class as a service
+ */
 public class TokenKeyGen {
 
     /*

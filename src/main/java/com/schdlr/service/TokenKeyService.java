@@ -13,6 +13,19 @@ import com.schdlr.repo.TokenKeyRepo;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+/*
+ * TokenKeyService handles scheduled requests related to
+ * TokenKey creation and managment.
+ * 
+ * Responsibilities:
+ * - Creating refresh and sign-in tokens.
+ * - Deleting TokenKeys when they expire.
+ * - Marking them with grace when they enter
+ * the period where they should only validate exisiting tokens
+ * not sign them.
+ * Annotations:
+ * - @Service: Marks this class as a service
+ */
 @Service
 public class TokenKeyService {
 

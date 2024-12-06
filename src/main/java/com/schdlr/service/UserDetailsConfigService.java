@@ -12,6 +12,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/*
+ * UserDetailsConfigService handles API requests related to loading users by
+ * username and email.
+ * 
+ * Responsibilities:
+ * - Loading users by their username.
+ * - Loading users by their email
+ * 
+ * Annotations:
+ * - @Service: Marks this class as a service
+ */
+
 @Service
 public class UserDetailsConfigService  implements UserDetailsService{
 

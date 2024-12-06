@@ -53,7 +53,15 @@ public class UserManagmentService {
         return new ResponseEntity<>(user.getUserName(), HttpStatus.OK);
     }
 
+    /*
+     * Allows the user to signup if the way the email is formatted is valid 
+     * and if the email has not been previously used by someone else.
+     * SignedUpUser - parameter that contains all the needed info to sign someone up
+     * returns The username if the email is valid
+     * and unused, or an error message otherwise.
+     */
     public ResponseEntity<String> userSignUp(SignedUpUser user) {
+
          if(!isValidEmail(user)){
             return new ResponseEntity<>("Non valid email format entered.Please change email",HttpStatus.METHOD_NOT_ALLOWED);
         }else if(usedEmail(user)){
@@ -66,6 +74,14 @@ public class UserManagmentService {
         
         }
 
+    /*
+     * Allows the user to signin if the account exists in the databse 
+     * and if the password they enter is the same as the one stored in the databse.
+     * SignedUpUser - parameter that contains all the needed info to sign someone in
+     * returns The username if the account exists
+     * and password is good, or an error message otherwise.
+     */
+
     public ResponseEntity<String> userSignIn(SignedUpUser user) {
         boolean usedEmail = usedEmail(user);
         SignedUpUser dbUser = repo.findByEmail(user.getEmail()).get();
@@ -77,6 +93,11 @@ public class UserManagmentService {
     }
 
 
+    /*
+     * Checks if the email of a user is a valid email
+     * SignedUpUser - parameter that contains the email of the user being checked
+     * returns true if it's valid false if not
+     */
     public boolean isValidEmail(SignedUpUser user){
         // Email validation regex pattern
         String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
@@ -84,12 +105,13 @@ public class UserManagmentService {
         return pattern.matcher(user.getEmail()).matches();
     }
 
+    /*
+     * Checks if the email of a user has ever been used
+     * SignedUpUser - parameter that contains the email of the user being checked
+     * returns true if it's used false if not
+     */
     public boolean usedEmail(SignedUpUser user){
         return repo.findByEmail(user.getEmail()).isPresent();
-    }
-
-    public SignedUpUser getUserByUserName(String userName){
-        return repo.findByUserName(userName).get();
     }
 
     }
