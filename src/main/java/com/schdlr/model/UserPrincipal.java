@@ -8,7 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collections;
 
-import com.schdlr.model.SignedUpUser;
+import com.schdlr.model.SignedUser;
 
 /*
  * UserPrincipal is an implementation of UserDetails used by Spring Security.
@@ -27,14 +27,14 @@ import com.schdlr.model.SignedUpUser;
 
 public class UserPrincipal implements UserDetails{
 
-    private SignedUpUser user;
+    private SignedUser user;
 
     /*
      * Constructor to initialize UserPrincipal with a SignedUpUser.
      * 
      * user - The signed-up user entity.
      */
-    public UserPrincipal(SignedUpUser user) {
+    public UserPrincipal(SignedUser user) {
         this.user = user;
     }
 

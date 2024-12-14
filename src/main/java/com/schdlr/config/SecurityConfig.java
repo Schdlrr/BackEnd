@@ -64,7 +64,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(request -> request
         //Endpoints that should be accessible to all of the application 
         .requestMatchers("/api/user/signup", "/api/user/signin", "/api/user/"
-        ,"/swagger-ui/**","/v3/api-docs/**","/api/user/refresh-token")
+        ,"/swagger-ui/**","/v3/api-docs/**","/api/refresh-token")
         .permitAll()
         .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())

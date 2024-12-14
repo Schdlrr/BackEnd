@@ -4,8 +4,9 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.schdlr.service.JWTService;
 import com.schdlr.service.UserDetailsConfigService;
+import com.schdlr.util.TokenAndCookiesUtil;
+import com.schdlr.util.TokenExtractionUtil;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,20 +36,25 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
-    // Service responsible for handling JWT operations like extraction and
+    // Util responsible for handling JWT operations like extraction and
     // validation
-    private JWTService jwtService;
+    private final  TokenExtractionUtil tokenExtractionUtil;
 
     // Spring's application context for dynamically retrieving beans
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+
+    //Util for extracting tokens out of cookies
+    private final TokenAndCookiesUtil tokenAndCookiesUtil;
 
     /*
      * jwtService - Service for handling JWT-related operations.
      * applicationContext - Spring application context for accessing beans.
      */
-    public JWTFilter(JWTService jwtService, ApplicationContext applicationContext) {
-        this.jwtService = jwtService;
+    public JWTFilter(TokenExtractionUtil tokenExtractionUtil, ApplicationContext applicationContext
+    , TokenAndCookiesUtil tokenAndCookiesUtil) {
+        this.tokenExtractionUtil = tokenExtractionUtil;
         this.applicationContext = applicationContext;
+        this.tokenAndCookiesUtil = tokenAndCookiesUtil;
 
     }
 
@@ -73,7 +79,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // Define paths that should bypass JWT validation (endpoints that should be
         // accessible to all users)
-        String[] excludedPaths = { "/api/user/signin", "/api/user/signup", "/api/user/refresh-token" };
+        String[] excludedPaths = { "/api/user/signin", "/api/user/signup", "/api/refresh-token" };
 
         String requestURI = request.getRequestURI();
 
@@ -84,12 +90,12 @@ public class JWTFilter extends OncePerRequestFilter {
             }
         }
 
-        String token = jwtService.extractTokenFromCookies(request, "accessToken");
+        String token = tokenAndCookiesUtil.extractTokenFromCookies(request, "accessToken");
         String email;
         if (token != null) {
             try {
 
-                email = jwtService.extractEmail(token);
+                email = tokenExtractionUtil.extractEmail(token);
 
                 // If email exists and no authentication is currently set, proceed
                 if (email != null
@@ -99,7 +105,7 @@ public class JWTFilter extends OncePerRequestFilter {
                     UserDetails userDetails = applicationContext.getBean(UserDetailsConfigService.class)
                             .loadUserByEmail(email);
 
-                    if (jwtService.authenticateToken(token)) {
+                    if (tokenExtractionUtil.authenticateToken(token)) {
                         // Create an authentication token using the retrieved user details
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());

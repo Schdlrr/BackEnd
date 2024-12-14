@@ -13,6 +13,8 @@ import com.schdlr.repo.TokenKeyRepo;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+
 /*
  * TokenKeyService handles scheduled requests related to
  * TokenKey creation and managment.
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
  * Annotations:
  * - @Service: Marks this class as a service
  */
+@Slf4j
 @Service
 public class TokenKeyService {
 
@@ -56,6 +59,7 @@ public class TokenKeyService {
             tokenKey.setKeyActivity(KeyActivity.ACTIVE); // Set the key's activity status to ACTIVE
 
             tokenKeyRepo.save(tokenKey); // Save the TokenKey entity to the repository
+            log.info("New keys created");
 
         }
     }
@@ -86,5 +90,6 @@ public class TokenKeyService {
                 tokenKeyRepo.save(key); // Save the updated key back to the repository
             }
         }
+        log.info("Weekly check done");
     }
 }

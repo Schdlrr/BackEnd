@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 /*
  * Entity representing a signed-up user in the system.
  * 
@@ -25,19 +23,25 @@ import lombok.NoArgsConstructor;
  * - `number`: Contact number of the user.
  * - `password`: Encrypted password for the user.
  */
+import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignedUpUser {
+public class SignedUser{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signed_up_user_sequence")
-    @SequenceGenerator(name = "signed_up_user_sequence", sequenceName = "signed_up_user_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signedUpUser_seq")
+    @SequenceGenerator(name = "signedUpUser_seq", sequenceName = "signed_up_user_sequence", allocationSize = 1)
     private Integer id;
+
     private String userName;
+
     private String email;
+
     private String number;
+
     private String password;
+
 }

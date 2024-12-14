@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.schdlr.model.SignedUpUser;
+import com.schdlr.model.SignedUser;
 import com.schdlr.service.JWTService;
 import com.schdlr.service.UserManagmentService;
 import com.schdlr.util.TokenAndCookiesUtil;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * UserManagmentController handles API requests related to user management.
@@ -37,10 +38,11 @@ import jakarta.servlet.http.HttpServletResponse;
  * - @CrossOrigin(origins = "http://localhost:3000"): Enables Cross-Origin Resource Sharing (CORS) 
  *   for requests from the frontend.
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:3000")
-public class UserManagmentController {
+public class SignedUserController {
 
     // Service for handling business logic related to user management
     private UserManagmentService service;
@@ -58,7 +60,7 @@ public class UserManagmentController {
      * jwtService - The JWTService for token generation and validation.
      * tokenAndCookiesUtil - Utility for managing tokens and cookies.
      */
-    public UserManagmentController(UserManagmentService service, JWTService jwtService,
+    public SignedUserController(UserManagmentService service, JWTService jwtService,
             TokenAndCookiesUtil tokenAndCookiesUtil) {
         this.service = service;
         this.jwtService = jwtService;
@@ -89,7 +91,7 @@ public class UserManagmentController {
      * returns ResponseEntity<String> - Response indicating success or failure of the signup process.
      */
     @PostMapping("/signup")
-    public ResponseEntity<String> userSignUp(@RequestBody SignedUpUser user) {
+    public ResponseEntity<String> userSignUp(@RequestBody SignedUser user) {
         return service.userSignUp(user);
     }
 
@@ -110,55 +112,27 @@ public class UserManagmentController {
      * returns ResponseEntity<String> - Response indicating success or failure of the signin process.
      */
     @PostMapping("/signin")
-    public ResponseEntity<String> userSignIn(@RequestBody SignedUpUser user, HttpServletResponse response,
+    public ResponseEntity<String> userSignIn(@RequestBody SignedUser user, HttpServletResponse response,
             HttpServletRequest request) {
         String email = user.getEmail();
         try {
             // Generate tokens for the user
-            String refreshToken = jwtService.generateRefreshToken(email);
-            String accessToken = jwtService.generateAccessToken(email);
+            String refreshToken = jwtService.generateRefreshToken(email,"SignedUser");
+            String accessToken = jwtService.generateAccessToken(email,"SignedUser");
 
             // Add tokens as cookies in the response
             tokenAndCookiesUtil.addCookie(response, "accessToken", accessToken, 30 * 60, true, false, "Strict");
             tokenAndCookiesUtil.addCookie(response, "refreshToken", refreshToken, 30 * 24 * 60 * 60, true, false,
                     "Strict");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("NoSuchAlgorithm exists");
+            log.error("Algorithm for token does not exist", e);
+            return new ResponseEntity<>("Algorithm for token does not exist", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvalidKeySpecException w) {
-            System.out.println("Wrong key spec");
+            log.error("The key sppec used is invalid", w);
+            return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return service.userSignIn(user);
-    }
-
-    /*
-     * Handles refresh token requests to generate a new access token.
-     * 
-     * Endpoint: POST /api/user/refresh-token
-     * 
-     * Process:
-     * - Extracts the refresh token from cookies.
-     * - Verifies the validity of the refresh token and user details.
-     * - Generates a new access token if the refresh token is valid.
-     * 
-     * request - HttpServletRequest for extracting cookies.
-     * response - HttpServletResponse for adding the new access token as a cookie.
-     * returns ResponseEntity<String> - Response indicating success or failure of token refresh.
-     */
-    @PostMapping("/refresh-token")
-    public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeySpecException{
-
-        String existingRefreshToken = tokenAndCookiesUtil.extractTokenFromCookies(request, "refreshToken");
-
-        if (existingRefreshToken != null) {
-                return service.verify(request, response,existingRefreshToken);
-        }
-        return new ResponseEntity<>("Refresh Token does not exist" , HttpStatus.BAD_REQUEST);
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test(){
-        return new ResponseEntity<>("Test", HttpStatus.OK);
     }
 
 }

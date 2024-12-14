@@ -11,19 +11,24 @@ spring:
   jpa:
     properties:
       hibernate:
-        format_sql: 'true'
-        allow_update_outside_transaction: 'false'
+        format_sql: true
+        allow_update_outside_transaction: false
     hibernate:
       ddl-auto: update
-    show-sql: 'true'
+    show-sql: true   
 springdoc:
   swagger-ui:
     enabled: true
     path: /swagger-ui.html
   api-docs:
     path: /v3/api-docs
+
 logging:
   level:
-    org:
-      springframework:
-        security: DEBUG
+    root: INFO
+    com.schdlr : DEBUG       
+    org.springframework.security: DEBUG
+  file:
+    name: logs/application.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

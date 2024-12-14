@@ -3,7 +3,7 @@ package com.schdlr.service;
 
 import java.util.Optional;
 
-import com.schdlr.model.SignedUpUser;
+import com.schdlr.model.SignedUser;
 import com.schdlr.model.UserPrincipal;
 import com.schdlr.repo.UserManagmentRepo;
 
@@ -47,7 +47,7 @@ public class UserDetailsConfigService  implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        Optional<SignedUpUser> user = userManagmentRepo.findByUserName(username); // Fetch user from the repository
+        Optional<SignedUser> user = userManagmentRepo.findByUserName(username); // Fetch user from the repository
 
         // Check if the user is present; otherwise, throw an exception
         if(!user.isPresent()){
@@ -60,7 +60,7 @@ public class UserDetailsConfigService  implements UserDetailsService{
 
 
     public UserDetails loadUserByEmail(String email) {
-        Optional<SignedUpUser> user = userManagmentRepo.findByEmail(email); // Fetch user from the repository
+        Optional<SignedUser> user = userManagmentRepo.findByEmail(email); // Fetch user from the repository
 
         // Check if the user is present; otherwise, throw an exception
         if(!user.isPresent()){

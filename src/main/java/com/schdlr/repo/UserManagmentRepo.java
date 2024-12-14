@@ -2,14 +2,14 @@ package com.schdlr.repo;
 
 import java.util.Optional;
 
-import com.schdlr.model.SignedUpUser;
+import com.schdlr.model.SignedUser;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface UserManagmentRepo extends JpaRepository<SignedUpUser,Integer>{
+public interface UserManagmentRepo extends JpaRepository<SignedUser,Integer>{
 
 
     /*
@@ -18,7 +18,7 @@ public interface UserManagmentRepo extends JpaRepository<SignedUpUser,Integer>{
      * userName - The username of the user.
      * returns An `Optional` containing the found user, or empty if not found.
      */
-    Optional<SignedUpUser> findByUserName(String userName);
+    Optional<SignedUser> findByUserName(String userName);
 
     /*
      * Finds a `SignedUpUser` by their email address.
@@ -26,7 +26,7 @@ public interface UserManagmentRepo extends JpaRepository<SignedUpUser,Integer>{
      * email - The email address of the user.
      * returns An `Optional` containing the found user, or empty if not found.
      */
-    Optional<SignedUpUser> findByEmail(String email);
+    Optional<SignedUser> findByEmail(String email);
 
 
 }

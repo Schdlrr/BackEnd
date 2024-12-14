@@ -1,9 +1,8 @@
 package com.schdlr.service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
-import com.schdlr.model.SignedUpUser;
+import com.schdlr.model.SignedUser;
 import com.schdlr.repo.UserManagmentRepo;
 import com.schdlr.util.PasswordEncoderUtil;
 
@@ -12,15 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class UserManagmentService {
 
     private UserManagmentRepo repo; 
-
-    private final JWTService jwtService;
 
     // Password encoder instance
     private BCryptPasswordEncoder encoder = PasswordEncoderUtil.getInstance();
@@ -35,22 +32,6 @@ public class UserManagmentService {
     public UserManagmentService(UserManagmentRepo repo
     ,JWTService jwtService){
         this.repo = repo;
-        this.jwtService = jwtService;
-    }
-
-    /*
-     * Verifies a refresh token extracted from cookies.
-     * request-The HttpServletRequest containing the cookies.
-     * response-The HttpServletResponse to send responses.
-     * returns The username if the token is valid, or an error message otherwise.
-     */
-    public ResponseEntity<String> verify( HttpServletRequest request, HttpServletResponse response,String refreshToken) throws NoSuchAlgorithmException, InvalidKeySpecException{
-        if(!jwtService.authenticateToken(refreshToken)){
-            return new ResponseEntity<>("Refresh Token is invalid", HttpStatus.UNAUTHORIZED);
-        }
-        String email = jwtService.extractEmail(refreshToken);
-        SignedUpUser user = repo.findByEmail(email).get();
-        return new ResponseEntity<>(user.getUserName(), HttpStatus.OK);
     }
 
     /*
@@ -60,7 +41,7 @@ public class UserManagmentService {
      * returns The username if the email is valid
      * and unused, or an error message otherwise.
      */
-    public ResponseEntity<String> userSignUp(SignedUpUser user) {
+    public ResponseEntity<String> userSignUp(SignedUser user) {
 
          if(!isValidEmail(user)){
             return new ResponseEntity<>("Non valid email format entered.Please change email",HttpStatus.METHOD_NOT_ALLOWED);
@@ -69,7 +50,9 @@ public class UserManagmentService {
         }else{
             user.setPassword(encoder.encode(user.getPassword()));
             repo.save(user);
-            return new ResponseEntity<>(user.getUserName(),HttpStatus.CREATED);
+            String userName = user.getUserName();
+            log.info("User signed up : " + userName);
+            return new ResponseEntity<>(userName,HttpStatus.CREATED);
         }
         
         }
@@ -82,11 +65,18 @@ public class UserManagmentService {
      * and password is good, or an error message otherwise.
      */
 
-    public ResponseEntity<String> userSignIn(SignedUpUser user) {
+    public ResponseEntity<String> userSignIn(SignedUser user) {
         boolean usedEmail = usedEmail(user);
-        SignedUpUser dbUser = repo.findByEmail(user.getEmail()).get();
+        SignedUser dbUser;
+        try{
+        dbUser = repo.findByEmail(user.getEmail()).get();
+        }catch(NoSuchElementException e){
+            return new ResponseEntity<>("User not present in database", HttpStatus.BAD_REQUEST);
+        }
         if (usedEmail && encoder.matches(user.getPassword(),dbUser.getPassword())) {
-            return new ResponseEntity<>(user.getUserName(),HttpStatus.OK);
+            String username = user.getUserName();
+            log.info("User signed in : " + username );
+            return new ResponseEntity<>(username,HttpStatus.OK);
         } else {
             return new ResponseEntity<>("The credentials that were used do not match to any user please try again",HttpStatus.UNAUTHORIZED);
         }
@@ -98,7 +88,7 @@ public class UserManagmentService {
      * SignedUpUser - parameter that contains the email of the user being checked
      * returns true if it's valid false if not
      */
-    public boolean isValidEmail(SignedUpUser user){
+    public boolean isValidEmail(SignedUser user){
         // Email validation regex pattern
         String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern =Pattern.compile(combinedRegex);
@@ -110,7 +100,7 @@ public class UserManagmentService {
      * SignedUpUser - parameter that contains the email of the user being checked
      * returns true if it's used false if not
      */
-    public boolean usedEmail(SignedUpUser user){
+    public boolean usedEmail(SignedUser user){
         return repo.findByEmail(user.getEmail()).isPresent();
     }
 
