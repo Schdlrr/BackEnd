@@ -4,7 +4,6 @@ import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 import com.schdlr.model.SignedUser;
 import com.schdlr.repo.UserManagmentRepo;
-import com.schdlr.util.PasswordEncoderUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,23 +14,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class UserManagmentService {
+public class SignedUserService{
 
-    private UserManagmentRepo repo; 
+    private UserManagmentRepo repo;
 
-    // Password encoder instance
-    private BCryptPasswordEncoder encoder = PasswordEncoderUtil.getInstance();
-    
+    private BCryptPasswordEncoder encoder;
 
-    /*
-     * Constructor for injecting dependencies.
-     * repo-Repository for user management.
-     * tokenAndCookiesUtil-Utility for token and cookie operations.
-     * jwtService Service-for handling JWT operations.
-     */
-    public UserManagmentService(UserManagmentRepo repo
-    ,JWTService jwtService){
+    public SignedUserService(UserManagmentRepo repo , BCryptPasswordEncoder encoder){
         this.repo = repo;
+        this.encoder = encoder;
     }
 
     /*

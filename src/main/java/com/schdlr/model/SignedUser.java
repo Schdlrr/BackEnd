@@ -32,8 +32,8 @@ import lombok.NoArgsConstructor;
 public class SignedUser{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signedUpUser_seq")
-    @SequenceGenerator(name = "signedUpUser_seq", sequenceName = "signed_up_user_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signedUserSeq")
+    @SequenceGenerator(name = "signedUpUserSeq", sequenceName = "signed_user_sequence", allocationSize = 1)
     private Integer id;
 
     private String userName;

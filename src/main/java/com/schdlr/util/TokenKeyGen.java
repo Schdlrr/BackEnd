@@ -1,4 +1,4 @@
-package com.schdlr.service;
+package com.schdlr.util;
 
 import java.security.Key;
 import java.security.KeyPair;
@@ -13,8 +13,6 @@ import java.util.Base64;
  * - Creating pairs of RSA keys.
  * - Encoding the keys to string
  * 
- * Annotations:
- * - @Service: Marks this class as a service
  */
 public class TokenKeyGen {
 

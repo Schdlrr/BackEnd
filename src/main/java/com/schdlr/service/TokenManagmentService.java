@@ -4,7 +4,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.NoSuchElementException;
 
+import com.schdlr.model.BusinessOwner;
 import com.schdlr.model.SignedUser;
+import com.schdlr.repo.BusinessOwnerRepo;
 import com.schdlr.repo.UserManagmentRepo;
 import com.schdlr.util.TokenExtractionUtil;
 
@@ -20,13 +22,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class TokenManagmentService {
 
-    private final TokenExtractionUtil tokenExtractionUtil;
+    private TokenExtractionUtil tokenExtractionUtil;
 
-    private final UserManagmentRepo repo;
+    private UserManagmentRepo repo;
 
-    public TokenManagmentService (UserManagmentRepo repo , TokenExtractionUtil tokenExtractionUtil){
+    private BusinessOwnerRepo BOrepo;
+
+    public TokenManagmentService (UserManagmentRepo repo , TokenExtractionUtil tokenExtractionUtil,
+    BusinessOwnerRepo BOrepo){
         this.repo = repo;
         this.tokenExtractionUtil = tokenExtractionUtil;
+        this.BOrepo = BOrepo;
     }
 
     /*
@@ -40,13 +46,26 @@ public class TokenManagmentService {
             return new ResponseEntity<>("Refresh Token is invalid", HttpStatus.UNAUTHORIZED);
         }
         String email = tokenExtractionUtil.extractEmail(refreshToken);
-        SignedUser user;
-        try{
-        user = repo.findByEmail(email).get();
-        }catch(NoSuchElementException e) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        String role = tokenExtractionUtil.extractRole(refreshToken);
+        if(role.equals("BusinessOwner")){
+            BusinessOwner BO;
+            
+            try{
+                BO = BOrepo.findByEmail(email).get();
+                }catch(NoSuchElementException e) {
+                    return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                }
+                log.info("User verified");
+                return new ResponseEntity<>(BO.getUserName(), HttpStatus.OK);
+        }else{
+            SignedUser user;
+            try{
+                user = repo.findByEmail(email).get();
+                }catch(NoSuchElementException e) {
+                    return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+                }
+                log.info("User verified");
+                return new ResponseEntity<>(user.getUserName(), HttpStatus.OK);
         }
-        log.info("User verified");
-        return new ResponseEntity<>(user.getUserName(), HttpStatus.OK);
     }
 }

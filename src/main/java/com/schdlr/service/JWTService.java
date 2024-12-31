@@ -49,6 +49,7 @@ public class JWTService {
    */
   public String generateRefreshToken(String email,String role) throws NoSuchAlgorithmException, InvalidKeySpecException {
     Map<String, Object> claims = new HashMap<>();
+    claims.put("role", role);
 
     TokenKey tokenKey = getRandomActiveKey();
     PrivateKey privateKey = getPrivateKey(tokenKey);

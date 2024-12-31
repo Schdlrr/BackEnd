@@ -9,6 +9,8 @@ import java.util.List;
 import com.schdlr.model.KeyActivity;
 import com.schdlr.model.TokenKey;
 import com.schdlr.repo.TokenKeyRepo;
+import com.schdlr.util.TokenExtractionUtil;
+import com.schdlr.util.TokenKeyGen;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class TokenKeyService {
+
 
     private TokenKeyRepo tokenKeyRepo;
 
@@ -62,6 +65,7 @@ public class TokenKeyService {
             log.info("New keys created");
 
         }
+        TokenExtractionUtil.refreshKeys(tokenKeyRepo);
     }
 
     /*

@@ -15,7 +15,17 @@ spring:
         allow_update_outside_transaction: false
     hibernate:
       ddl-auto: update
-    show-sql: true   
+    show-sql: true 
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            client-id: 961446176422-8u34p7c03g5ht3d946mab7f6g9b8d9kk.apps.googleusercontent.com
+            client-secret: ${CLIENT_SECRET}
+              
 springdoc:
   swagger-ui:
     enabled: true
@@ -32,3 +42,5 @@ logging:
     name: logs/application.log
   pattern:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+

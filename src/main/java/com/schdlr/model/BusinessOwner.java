@@ -31,11 +31,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BussinessOwner{
+public class BusinessOwner{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "businessOwner_seq")
-    @SequenceGenerator(name = "businessOwner_seq", sequenceName = "business_owner_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "businessOwnerSeq")
+    @SequenceGenerator(name = "businessOwnerSeq", sequenceName = "business_owner_sequence", allocationSize = 1)
     private Integer id;
 
     private String userName;
@@ -46,9 +46,9 @@ public class BussinessOwner{
 
     private String password;
 
-    private String bussinesAddress;
+    private String businessAddress;
     
-    private String bussinessName;
+    private String businessName;
 
 
 }

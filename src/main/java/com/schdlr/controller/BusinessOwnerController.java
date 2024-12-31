@@ -1,87 +1,57 @@
 package com.schdlr.controller;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.schdlr.model.SignedUser;
+import com.schdlr.model.BusinessOwner;
+import com.schdlr.service.BusinessOwnerService;
 import com.schdlr.service.JWTService;
-import com.schdlr.service.SignedUserService;
 import com.schdlr.util.TokenAndCookiesUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-/*
- * UserManagmentController handles API requests related to user management.
- * 
- * Responsibilities:
- * - User signup and signin functionality.
- * - Token-based authentication and refresh token management.
- * - Redirect to the Swagger documentation page.
- * - CORS configuration to allow frontend interaction.
- * 
- * Annotations:
- * - @RestController: Marks this class as a REST controller for handling HTTP requests.
- * - @RequestMapping("/api/user"): Maps all endpoints in this controller to the "/api/user" path.
- * - @CrossOrigin(origins = "http://localhost:3000"): Enables Cross-Origin Resource Sharing (CORS) 
- *   for requests from the frontend.
- */
+
 @Slf4j
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/business")
 @CrossOrigin(origins = "http://localhost:3000")
-public class SignedUserController{
+public class BusinessOwnerController{
 
-    private SignedUserService service;
+    private BusinessOwnerService bussinesOwnerService;
 
     private JWTService jwtService;
 
     private TokenAndCookiesUtil tokenAndCookiesUtil;
 
-    public SignedUserController(SignedUserService service, JWTService jwtService,
-    TokenAndCookiesUtil tokenAndCookiesUtil){
-        this.service = service;
+    public BusinessOwnerController(BusinessOwnerService bussinesOwnerService, 
+    JWTService jwtService , TokenAndCookiesUtil tokenAndCookiesUtil){
+        this.bussinesOwnerService = bussinesOwnerService;
         this.jwtService = jwtService;
         this.tokenAndCookiesUtil = tokenAndCookiesUtil;
     }
-    /*
-     * Redirects root requests to the Swagger documentation page.
-     * 
-     * Endpoint: GET /api/user/
-     * 
-     * response - HttpServletResponse object for sending the redirect response.
-     * IOException - If an input/output error occurs during redirection.
-     */
-    @Hidden
-    @GetMapping("/")
-    public void redirect(HttpServletResponse response) throws IOException {
-        // Redirects to Swagger documentation when accessing root endpoint
-        response.sendRedirect("/swagger-ui/index.html");
-    }
 
-    /*
-     * Handles user signup requests.
-     * 
-     * Endpoint: POST /api/user/signup
-     * 
-     * user - The user object containing signup information (username, password, etc.).
-     * returns ResponseEntity<String> - Response indicating success or failure of the signup process.
-     */
-    @PostMapping("/signup")
-    public ResponseEntity<String> userSignUp(@RequestBody SignedUser user) {
-        return service.userSignUp(user);
+    @GetMapping("/test")
+    public String testingMethod(@RequestParam String param) {
+        return "Welcome to the best website ever";
+    }
+    
+
+    
+     @PostMapping("/signup")
+    public ResponseEntity<String> userSignUp(@RequestBody BusinessOwner BO) {
+        return bussinesOwnerService.userSignUp(BO);
     }
 
 
@@ -101,13 +71,13 @@ public class SignedUserController{
      * returns ResponseEntity<String> - Response indicating success or failure of the signin process.
      */
     @PostMapping("/signin")
-    public ResponseEntity<String> userSignIn(@RequestBody SignedUser user, HttpServletResponse response,
+    public ResponseEntity<String> userSignIn(@RequestBody BusinessOwner BO, HttpServletResponse response,
             HttpServletRequest request) {
-        String email = user.getEmail();
+        String email = BO.getEmail();
         try {
             // Generate tokens for the user
-            String refreshToken = jwtService.generateRefreshToken(email,"SignedUser");
-            String accessToken = jwtService.generateAccessToken(email,"SignedUser");
+            String refreshToken = jwtService.generateRefreshToken(email,"BusinessOwner");
+            String accessToken = jwtService.generateAccessToken(email,"BusinessOwner");
 
             // Add tokens as cookies in the response
             tokenAndCookiesUtil.addCookie(response, "accessToken", accessToken, 30 * 60, true, false, "Strict");
@@ -121,7 +91,7 @@ public class SignedUserController{
             return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return service.userSignIn(user);
+        return bussinesOwnerService.userSignIn(BO);
     }
 
 }

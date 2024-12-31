@@ -17,20 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/api/refresh-token")
+@RequestMapping("/api/token")
 @CrossOrigin(origins = "http://localhost:3000")
-public class TokenController {
-
-    private final TokenAndCookiesUtil tokenAndCookiesUtil;
-
-    private final TokenManagmentService tokenManagmentService;
-
-    public TokenController (TokenAndCookiesUtil tokenAndCookiesUtil, TokenManagmentService tokenManagmentService){
-        this.tokenAndCookiesUtil = tokenAndCookiesUtil;
-        this.tokenManagmentService = tokenManagmentService;
-    }
+public record TokenController(TokenAndCookiesUtil tokenAndCookiesUtil,
+TokenManagmentService tokenManagmentService) {
     
-        @PostMapping()
+        @PostMapping("/refresh")
         public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeySpecException{
     
             String existingRefreshToken = tokenAndCookiesUtil.extractTokenFromCookies(request, "refreshToken");

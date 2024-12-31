@@ -12,8 +12,6 @@ import java.util.function.Function;
 
 import com.schdlr.model.TokenKey;
 import com.schdlr.repo.TokenKeyRepo;
-
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -23,19 +21,23 @@ import io.jsonwebtoken.Jwts;
 @Component
 public class TokenExtractionUtil {
 
-    private final TokenKeyRepo tokenKeyRepo;
+  private final TokenKeyRepo tokenKeyRepo;
 
-    private List<TokenKey> keys;
+  private static List<TokenKey> keys;
 
-    public TokenExtractionUtil(TokenKeyRepo tokenKeyRepo){
-        this.tokenKeyRepo = tokenKeyRepo;
-    }
+  public TokenExtractionUtil(TokenKeyRepo tokenKeyRepo) {
+    this.tokenKeyRepo = tokenKeyRepo;
+    loadKeys(tokenKeyRepo);
+  }
 
-    @Scheduled(fixedRate = 60480000)
-    private void getKeys(){
-      keys = tokenKeyRepo.findAll();
-    }
+  private static synchronized void loadKeys(TokenKeyRepo tokenKeyRepo) {
+    keys = tokenKeyRepo.findAll();
+    System.out.println("Keys loaded: " + keys);
+  }
 
+  public static synchronized void refreshKeys(TokenKeyRepo tokenKeyRepo) {
+    loadKeys(tokenKeyRepo);
+  }
 
 
     /*
@@ -47,6 +49,14 @@ public class TokenExtractionUtil {
     try {
       return extractClaim(token, Claims::getSubject);
     } catch (JwtException e) {
+      throw new IllegalArgumentException("Invalid token");
+    }
+  }
+
+  public String extractRole(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    try{
+    return extractClaim(token, claims -> claims.get("role", String.class));
+    }catch (JwtException e){
       throw new IllegalArgumentException("Invalid token");
     }
   }
@@ -91,6 +101,8 @@ public class TokenExtractionUtil {
         System.err.println("Invalid JWT for key: " + tokenKey.getKid());
       }
     }
+    System.out.println("Keys loaded: " + keys);
+    System.out.println("Token: " + token);
 
     throw new IllegalArgumentException("Unable to verify token with any of the provided keys");
   }

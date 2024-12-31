@@ -8,8 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collections;
 
-import com.schdlr.model.SignedUser;
-
 /*
  * UserPrincipal is an implementation of UserDetails used by Spring Security.
  * It encapsulates user details required for authentication and authorization.
@@ -29,6 +27,8 @@ public class UserPrincipal implements UserDetails{
 
     private SignedUser user;
 
+    private BusinessOwner businessOwner;
+
     /*
      * Constructor to initialize UserPrincipal with a SignedUpUser.
      * 
@@ -38,20 +38,38 @@ public class UserPrincipal implements UserDetails{
         this.user = user;
     }
 
+    public UserPrincipal(BusinessOwner businessOwner){
+        this.businessOwner = businessOwner;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-         // Grants a single authority "USER" to the user
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+        if (user != null) {
+            return Collections.singleton(new SimpleGrantedAuthority("SIGNED_USER"));
+        } else if (businessOwner != null) {
+            return Collections.singleton(new SimpleGrantedAuthority("BUSINESS_OWNER"));
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        if (user != null) {
+            return user.getPassword();
+        } else if (businessOwner != null) {
+            return businessOwner.getPassword();
+        }
+        return null;
     }
 
     @Override
     public String getUsername() {
-        return user.getUserName();
+        if (user != null) {
+            return user.getUserName();
+        } else if (businessOwner != null) {
+            return businessOwner.getUserName();
+        }
+        return null;
     }
 
     @Override
@@ -73,8 +91,5 @@ public class UserPrincipal implements UserDetails{
     public boolean isEnabled() {
         return true;
     }
-    
-
-    
 
 }

@@ -20,6 +20,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * JWTFilter is a custom filter that intercepts incoming HTTP requests
@@ -33,6 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * 
  * Extends OncePerRequestFilter to ensure it is executed once per request.
  */
+@Slf4j
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
@@ -77,25 +79,17 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Define paths that should bypass JWT validation (endpoints that should be
-        // accessible to all users)
-        String[] excludedPaths = { "/api/user/signin", "/api/user/signup", "/api/refresh-token" };
-
-        String requestURI = request.getRequestURI();
-
-        for (String path : excludedPaths) {
-            if (requestURI.startsWith(path)) {
-                filterChain.doFilter(request, response); // Continue without filtering
-                return;
-            }
-        }
 
         String token = tokenAndCookiesUtil.extractTokenFromCookies(request, "accessToken");
         String email;
+        String role;
         if (token != null) {
             try {
+                
 
                 email = tokenExtractionUtil.extractEmail(token);
+                role = tokenExtractionUtil.extractRole(token);
+                log.info("Email, role and token:" + email +  " " + " " + role + " " + token);
 
                 // If email exists and no authentication is currently set, proceed
                 if (email != null
@@ -103,12 +97,14 @@ public class JWTFilter extends OncePerRequestFilter {
 
                     // Retrieve user details from the UserDetailsConfigService bean
                     UserDetails userDetails = applicationContext.getBean(UserDetailsConfigService.class)
-                            .loadUserByEmail(email);
+                            .loadUserByEmail(email,role);
+                            log.info(userDetails.toString());
 
                     if (tokenExtractionUtil.authenticateToken(token)) {
                         // Create an authentication token using the retrieved user details
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
+                                log.info(authToken.toString());
 
                         // Attach additional request-specific detail
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

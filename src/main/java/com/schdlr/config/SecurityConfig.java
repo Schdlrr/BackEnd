@@ -57,24 +57,26 @@ public class SecurityConfig {
      * - Configures session management as stateless (no server-side session storage).
      * - Configures headers to allow embedding resources from the same origin.
      */
+    
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-
-        return http.csrf(customizer -> customizer.disable())
-        .authorizeHttpRequests(request -> request
-        //Endpoints that should be accessible to all of the application 
-        .requestMatchers("/api/user/signup", "/api/user/signin", "/api/user/"
-        ,"/swagger-ui/**","/v3/api-docs/**","/api/refresh-token")
-        .permitAll()
-        .anyRequest().authenticated())
-        .httpBasic(Customizer.withDefaults())
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.sameOrigin())
-            )
-        .build();
-    }
+public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTFilter jwtFilter) throws Exception {
+    return http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/user/signup", "/api/user/signin", "/api/user/", "/swagger-ui/**",
+                            "/v3/api-docs/**", "/api/token/refresh",
+                            "/api/business/signin", "/api/business/signup")
+                    .permitAll()
+                    .anyRequest().authenticated())
+                    .httpBasic(Customizer.withDefaults())
+            /* .oauth2Login(oauth2 -> oauth2
+                    .defaultSuccessUrl("/api/business/test", true)
+                    .failureUrl("/login?error")
+                    .authorizedClientRepository(new AuthClientRepo())) // Custom repository */
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+            .build();
+}
 
     /*
      * Configures the authentication provider for the application.
