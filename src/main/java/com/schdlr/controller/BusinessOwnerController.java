@@ -54,22 +54,6 @@ public class BusinessOwnerController{
         return bussinesOwnerService.userSignUp(BO);
     }
 
-
-     /*
-     * Handles user signin requests and generates authentication tokens.
-     * 
-     * Endpoint: POST /api/user/signin
-     * 
-     * Process:
-     * - Validates user credentials.
-     * - Generates access and refresh tokens for the user.
-     * - Stores tokens in secure HTTP-only cookies.
-     * 
-     * user - The user object containing signin credentials (username and password).
-     * response - HttpServletResponse for adding cookies to the response.
-     * request - HttpServletRequest for processing the HTTP request.
-     * returns ResponseEntity<String> - Response indicating success or failure of the signin process.
-     */
     @PostMapping("/signin")
     public ResponseEntity<String> userSignIn(@RequestBody BusinessOwner BO, HttpServletResponse response,
             HttpServletRequest request) {

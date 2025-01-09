@@ -27,24 +27,18 @@ public class TokenExtractionUtil {
 
   public TokenExtractionUtil(TokenKeyRepo tokenKeyRepo) {
     this.tokenKeyRepo = tokenKeyRepo;
-    loadKeys(tokenKeyRepo);
+    loadKeys();
   }
 
-  private static synchronized void loadKeys(TokenKeyRepo tokenKeyRepo) {
+  private synchronized void loadKeys() {
     keys = tokenKeyRepo.findAll();
     System.out.println("Keys loaded: " + keys);
   }
 
-  public static synchronized void refreshKeys(TokenKeyRepo tokenKeyRepo) {
-    loadKeys(tokenKeyRepo);
+  public synchronized void refreshKeys() {
+    loadKeys();
   }
 
-
-    /*
-   * Extracts the email from a token after verifying it.
-   * token-The JWT token.
-   * returns The email embedded in the token.
-   */
   public String extractEmail(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
     try {
       return extractClaim(token, Claims::getSubject);

@@ -23,21 +23,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-/*
- * UserManagmentController handles API requests related to user management.
- * 
- * Responsibilities:
- * - User signup and signin functionality.
- * - Token-based authentication and refresh token management.
- * - Redirect to the Swagger documentation page.
- * - CORS configuration to allow frontend interaction.
- * 
- * Annotations:
- * - @RestController: Marks this class as a REST controller for handling HTTP requests.
- * - @RequestMapping("/api/user"): Maps all endpoints in this controller to the "/api/user" path.
- * - @CrossOrigin(origins = "http://localhost:3000"): Enables Cross-Origin Resource Sharing (CORS) 
- *   for requests from the frontend.
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
@@ -56,14 +41,7 @@ public class SignedUserController{
         this.jwtService = jwtService;
         this.tokenAndCookiesUtil = tokenAndCookiesUtil;
     }
-    /*
-     * Redirects root requests to the Swagger documentation page.
-     * 
-     * Endpoint: GET /api/user/
-     * 
-     * response - HttpServletResponse object for sending the redirect response.
-     * IOException - If an input/output error occurs during redirection.
-     */
+    
     @Hidden
     @GetMapping("/")
     public void redirect(HttpServletResponse response) throws IOException {
@@ -71,35 +49,11 @@ public class SignedUserController{
         response.sendRedirect("/swagger-ui/index.html");
     }
 
-    /*
-     * Handles user signup requests.
-     * 
-     * Endpoint: POST /api/user/signup
-     * 
-     * user - The user object containing signup information (username, password, etc.).
-     * returns ResponseEntity<String> - Response indicating success or failure of the signup process.
-     */
     @PostMapping("/signup")
     public ResponseEntity<String> userSignUp(@RequestBody SignedUser user) {
         return service.userSignUp(user);
     }
 
-
-     /*
-     * Handles user signin requests and generates authentication tokens.
-     * 
-     * Endpoint: POST /api/user/signin
-     * 
-     * Process:
-     * - Validates user credentials.
-     * - Generates access and refresh tokens for the user.
-     * - Stores tokens in secure HTTP-only cookies.
-     * 
-     * user - The user object containing signin credentials (username and password).
-     * response - HttpServletResponse for adding cookies to the response.
-     * request - HttpServletRequest for processing the HTTP request.
-     * returns ResponseEntity<String> - Response indicating success or failure of the signin process.
-     */
     @PostMapping("/signin")
     public ResponseEntity<String> userSignIn(@RequestBody SignedUser user, HttpServletResponse response,
             HttpServletRequest request) {

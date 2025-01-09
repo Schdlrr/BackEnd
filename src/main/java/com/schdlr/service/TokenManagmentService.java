@@ -35,12 +35,6 @@ public class TokenManagmentService {
         this.BOrepo = BOrepo;
     }
 
-    /*
-     * Verifies a refresh token extracted from cookies.
-     * request-The HttpServletRequest containing the cookies.
-     * response-The HttpServletResponse to send responses.
-     * returns The username if the token is valid, or an error message otherwise.
-     */
     public ResponseEntity<String> verifyRefreshToken( HttpServletRequest request, HttpServletResponse response,String refreshToken) throws NoSuchAlgorithmException, InvalidKeySpecException{
         if(!tokenExtractionUtil.authenticateToken(refreshToken)){
             return new ResponseEntity<>("Refresh Token is invalid", HttpStatus.UNAUTHORIZED);

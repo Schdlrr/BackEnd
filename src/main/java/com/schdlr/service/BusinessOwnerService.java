@@ -58,24 +58,12 @@ public class BusinessOwnerService {
         }
     }
 
-
-    /*
-     * Checks if the email of a user is a valid email
-     * SignedUpUser - parameter that contains the email of the user being checked
-     * returns true if it's valid false if not
-     */
     public boolean isValidEmail(BusinessOwner BO){
-        // Email validation regex pattern
         String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern =Pattern.compile(combinedRegex);
         return pattern.matcher(BO.getEmail()).matches();
     }
 
-    /*
-     * Checks if the email of a user has ever been used
-     * SignedUpUser - parameter that contains the email of the user being checked
-     * returns true if it's used false if not
-     */
     public boolean usedEmail(BusinessOwner BO){
         return BOrepo.findByEmail(BO.getEmail()).isPresent();
     }
