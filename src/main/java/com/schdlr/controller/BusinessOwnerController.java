@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,8 +54,7 @@ public class BusinessOwnerController{
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<String> userSignIn(@RequestBody BusinessOwner BO, HttpServletResponse response,
-            HttpServletRequest request) {
+    public ResponseEntity<String> userSignIn(@RequestBody BusinessOwner BO, HttpServletResponse response) {
         String email = BO.getEmail();
         try {
             // Generate tokens for the user

@@ -7,7 +7,6 @@ WORKDIR /Schdlr
 # Copy the JAR file into the container
 # Use a wildcard to match the JAR file, allowing for version changes
 COPY target/Schdlr*.jar Schdlr.jar
-
 # Expose the port that your Spring Boot app uses
 EXPOSE 8080
 
