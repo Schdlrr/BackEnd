@@ -40,7 +40,7 @@ public class GuestUserServiceTest {
 	private HttpServletResponse response;
 
 	@Test
-	public void testSignIn_Successful() throws Exception {
+	public void GuestUserService_testSignIn_Successful() throws Exception {
 
 		String expectedAccessToken = "mockAccessToken";
 		String expectedRefreshToken = "mockRefreshToken";
@@ -63,7 +63,7 @@ public class GuestUserServiceTest {
 	}
 
 	@Test
-	public void testSignIn_NoSuchAlgorithmException() throws Exception {
+	public void GuestUserService_testSignIn_NoSuchAlgorithmException() throws Exception {
 
 		given(jwtService.generateRefreshToken(anyString(), eq("GuestUser"))).willThrow(NoSuchAlgorithmException.class);
 
@@ -80,7 +80,7 @@ public class GuestUserServiceTest {
 	}
 
 	@Test
-	public void testSignIn_InvalidKeySpecException() throws Exception {
+	public void GuestUserService_testSignIn_InvalidKeySpecException() throws Exception {
 
 		given(jwtService.generateRefreshToken(anyString(), eq("GuestUser"))).willThrow(InvalidKeySpecException.class);
 
@@ -93,5 +93,24 @@ public class GuestUserServiceTest {
 
 		verify(jwtService).generateRefreshToken(anyString(), eq("GuestUser"));
 		verifyNoInteractions(tokenAndCookiesUtil); // Cookies should not be added
+	}
+
+	@Test
+	public void GuestUserService_testReturnSecureRandomString_CorrectStringLength(){
+		String returnedString = guestUserService.returnSecureRandomString();
+		int expectedLength = 43;
+
+		assertThat(returnedString).isNotNull();
+		assertThat(returnedString.length()).isEqualTo(expectedLength);
+	}
+
+	@Test
+	public void GuestUserService_testReturnSecureRandomString_Randomness(){
+		String firstString = guestUserService.returnSecureRandomString();
+		String secondString = guestUserService.returnSecureRandomString();
+
+		assertThat(firstString).isNotNull();
+		assertThat(secondString).isNotNull();
+		assertThat(firstString).isNotEqualTo(secondString);
 	}
 }
