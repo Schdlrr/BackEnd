@@ -37,7 +37,7 @@ public class GuestUserService {
             log.error("Algorithm for token does not exist", e);
             return new ResponseEntity<>("Algorithm for token does not exist", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvalidKeySpecException w) {
-            log.error("The key sppec used is invalid", w);
+            log.error("The key spec used is invalid", w);
             return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

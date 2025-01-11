@@ -1,25 +1,17 @@
 package com.schdlr.controller;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 import com.schdlr.model.BusinessOwner;
 import com.schdlr.service.BusinessOwnerService;
 import com.schdlr.service.JWTService;
 import com.schdlr.util.TokenAndCookiesUtil;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 
 @Slf4j
@@ -28,15 +20,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @CrossOrigin(origins = "http://localhost:3000")
 public class BusinessOwnerController{
 
-    private BusinessOwnerService bussinesOwnerService;
+    private BusinessOwnerService businessOwnerService;
 
     private JWTService jwtService;
 
     private TokenAndCookiesUtil tokenAndCookiesUtil;
 
-    public BusinessOwnerController(BusinessOwnerService bussinesOwnerService, 
+    public BusinessOwnerController(BusinessOwnerService businessOwnerService,
     JWTService jwtService , TokenAndCookiesUtil tokenAndCookiesUtil){
-        this.bussinesOwnerService = bussinesOwnerService;
+        this.businessOwnerService = businessOwnerService;
         this.jwtService = jwtService;
         this.tokenAndCookiesUtil = tokenAndCookiesUtil;
     }
@@ -50,7 +42,7 @@ public class BusinessOwnerController{
     
      @PostMapping("/signup")
     public ResponseEntity<String> userSignUp(@RequestBody BusinessOwner BO) {
-        return bussinesOwnerService.userSignUp(BO);
+        return businessOwnerService.userSignUp(BO);
     }
 
     @PostMapping("/signin")
@@ -73,7 +65,7 @@ public class BusinessOwnerController{
             return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return bussinesOwnerService.userSignIn(BO);
+        return businessOwnerService.userSignIn(BO);
     }
 
 }
