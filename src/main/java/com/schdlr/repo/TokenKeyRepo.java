@@ -1,17 +1,15 @@
 package com.schdlr.repo;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.schdlr.model.TokenKey;
-
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TokenKeyRepo extends JpaRepository <TokenKey,Integer> {
@@ -25,5 +23,5 @@ public interface TokenKeyRepo extends JpaRepository <TokenKey,Integer> {
     List<TokenKey> findAllActiveKeys();
 
     @Query("SELECT t FROM TokenKey t WHERE t.kid = :kid")
-    Optional<TokenKey> findById(Long kid);
+    Optional<TokenKey> findById(@Param("kid") Long kid);
 }
