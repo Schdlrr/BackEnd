@@ -1,26 +1,25 @@
 package com.schdlr.service;
 
-import java.util.NoSuchElementException;
-import java.util.regex.Pattern;
 import com.schdlr.model.SignedUser;
-import com.schdlr.repo.UserManagmentRepo;
-
+import com.schdlr.repo.SignedUserRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
 public class SignedUserService{
 
-    private UserManagmentRepo repo;
+    private SignedUserRepo repo;
 
     private BCryptPasswordEncoder encoder;
 
-    public SignedUserService(UserManagmentRepo repo , BCryptPasswordEncoder encoder){
+    public SignedUserService(SignedUserRepo repo , BCryptPasswordEncoder encoder){
         this.repo = repo;
         this.encoder = encoder;
     }

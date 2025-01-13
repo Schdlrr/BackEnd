@@ -1,22 +1,20 @@
 package com.schdlr.service;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.NoSuchElementException;
-
 import com.schdlr.model.BusinessOwner;
 import com.schdlr.model.SignedUser;
 import com.schdlr.repo.BusinessOwnerRepo;
-import com.schdlr.repo.UserManagmentRepo;
+import com.schdlr.repo.SignedUserRepo;
 import com.schdlr.util.TokenExtractionUtil;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -24,12 +22,12 @@ public class TokenManagmentService {
 
     private TokenExtractionUtil tokenExtractionUtil;
 
-    private UserManagmentRepo repo;
+    private SignedUserRepo repo;
 
     private BusinessOwnerRepo BOrepo;
 
-    public TokenManagmentService (UserManagmentRepo repo , TokenExtractionUtil tokenExtractionUtil,
-    BusinessOwnerRepo BOrepo){
+    public TokenManagmentService (SignedUserRepo repo , TokenExtractionUtil tokenExtractionUtil,
+								  BusinessOwnerRepo BOrepo){
         this.repo = repo;
         this.tokenExtractionUtil = tokenExtractionUtil;
         this.BOrepo = BOrepo;
