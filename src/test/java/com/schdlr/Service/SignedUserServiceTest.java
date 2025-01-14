@@ -53,6 +53,7 @@ public class SignedUserServiceTest {
 
 		ResponseEntity<String> response = signedUserService.userSignUp(testUser);
 
+		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isEqualTo("testUser");
 		verify(mockSignedUserRepo, times(1)).save(testUser);
@@ -69,11 +70,19 @@ public class SignedUserServiceTest {
 
 		ResponseEntity<String> response = signedUserService.userSignIn(testUser);
 
+		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(response.getBody()).isEqualTo("testUser");
 		verify(mockSignedUserRepo, times(1)).findByEmail("erdisyla6@gmail.com");
 		verify(mockEncoder,times(1))
 				.matches(testUser.getPassword(),testUser.getPassword());
 
+	}
+
+	@Test
+	public void SignedUserService_testIsValidEmail_ReturnsTrue(){
+		boolean isValidEmail = signedUserService.isValidEmail(testUser.getEmail());
+
+		assertThat(isValidEmail).isTrue();
 	}
 }

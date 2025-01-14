@@ -26,7 +26,7 @@ public class SignedUserService{
 
     public ResponseEntity<String> userSignUp(SignedUser user) {
 
-         if(!isValidEmail(user)){
+         if(!isValidEmail(user.getEmail())){
             return new ResponseEntity<>("Non valid email format entered.Please change email",HttpStatus.METHOD_NOT_ALLOWED);
         }else if(usedEmail(user)){
             return new ResponseEntity<>("Email is already used by another user. Please try to sign up with another kind of contact info",HttpStatus.CONFLICT);
@@ -56,10 +56,10 @@ public class SignedUserService{
         }
     }
 
-    public boolean isValidEmail(SignedUser user){
+    public boolean isValidEmail(String email){
         String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern =Pattern.compile(combinedRegex);
-        return pattern.matcher(user.getEmail()).matches();
+        return pattern.matcher(email).matches();
     }
     
     public boolean usedEmail(SignedUser user){

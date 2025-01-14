@@ -1,17 +1,15 @@
 package com.schdlr.service;
 
-import java.util.NoSuchElementException;
-import java.util.regex.Pattern;
-
 import com.schdlr.model.BusinessOwner;
 import com.schdlr.repo.BusinessOwnerRepo;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.NoSuchElementException;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -36,7 +34,7 @@ public class BusinessOwnerService {
             BO.setPassword(encoder.encode(BO.getPassword()));
             BOrepo.save(BO);
             String userName = BO.getUserName();
-            log.info("Business signed up : " + userName);
+			 log.info("Business signed up : {}", userName);
             return new ResponseEntity<>(userName,HttpStatus.CREATED);
         }
     }
@@ -49,9 +47,9 @@ public class BusinessOwnerService {
         }catch(NoSuchElementException e){
             return new ResponseEntity<>("User not present in database", HttpStatus.BAD_REQUEST);
         }
-        if (usedEmail && encoder.matches(BO.getPassword(),dbUser.getPassword())) {
+        if (encoder.matches(BO.getPassword(),dbUser.getPassword())) {
             String username = BO.getUserName();
-            log.info("Business Owner signed in : " + username);
+			log.info("Business Owner signed in : {}", username);
             return new ResponseEntity<>(username,HttpStatus.OK);
         } else {
             return new ResponseEntity<>("The credentials that were used do not match to any user please try again",HttpStatus.UNAUTHORIZED);
