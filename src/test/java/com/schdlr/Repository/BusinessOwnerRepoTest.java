@@ -2,6 +2,7 @@ package com.schdlr.Repository;
 
 import com.schdlr.model.BusinessOwner;
 import com.schdlr.repo.BusinessOwnerRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.platform.commons.annotation.Testable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,5 +22,18 @@ public class BusinessOwnerRepoTest {
 
 	public BusinessOwnerRepoTest(@Autowired BusinessOwnerRepo businessOwnerRepo){
 		this.businessOwnerRepo = businessOwnerRepo;
+	}
+
+	@BeforeEach
+	public void setUp(){
+		businessOwner1 = BusinessOwner.builder()
+				.userName("Erdi Syla").email("erdisyla6@gmail.com")
+				.password("stop").number("045210022").build();
+		businessOwner2 = BusinessOwner.builder()
+				.userName("Idre Alys").email("erdisyla7@gmail.com")
+				.password("go").number("045220022").build();
+		businessOwner3 = BusinessOwner.builder()
+				.userName("Drei Lasy").email("erdisyla8@gmail.com")
+				.password("hold").number("045210021").build();
 	}
 }
