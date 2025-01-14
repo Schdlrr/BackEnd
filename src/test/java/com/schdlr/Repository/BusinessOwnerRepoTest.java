@@ -10,6 +10,8 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testable
@@ -66,5 +68,14 @@ public class BusinessOwnerRepoTest {
 		assertThat(finalUser).isNotNull();
 		assertThat(finalUser.getUserName()).isEqualTo("Alexander Syla");
 		assertThat(finalUser.getPassword()).isEqualTo("STOP");
+	}
+	@Test
+	public void BusinessOwnerTest_testDelete_ReturnsNothing(){
+		BusinessOwner savedOwner = businessOwnerRepo. saveAndFlush(businessOwner1);
+
+		businessOwnerRepo.delete(savedOwner);
+		Optional<BusinessOwner> deletedUser = businessOwnerRepo.findById(savedOwner.getId());
+
+		assertThat(deletedUser).isEmpty();
 	}
 }
