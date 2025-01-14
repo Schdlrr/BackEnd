@@ -1,0 +1,59 @@
+package com.schdlr.Service;
+
+import com.schdlr.model.SignedUser;
+import com.schdlr.repo.SignedUserRepo;
+import com.schdlr.service.SignedUserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.platform.commons.annotation.Testable;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+
+@Testable
+@ExtendWith(MockitoExtension.class)
+public class SignedUserServiceTest {
+
+	@Mock
+	private SignedUserRepo mockSignedUserRepo;
+
+	@Mock
+	private BCryptPasswordEncoder mockEncoder;
+
+	@InjectMocks
+	private SignedUserService signedUserService;
+
+	private SignedUser testUser;
+
+	@BeforeEach
+	public void setUp(){
+		testUser = SignedUser.builder().userName("testUser")
+				.email("erdisyla6@gmail.com").password("password")
+				.number("044221100").build();
+	}
+
+	@Test
+	public void SignedUserService_testSignUp_ReturnsCorrectResponse(){
+		given(mockEncoder.encode(testUser.getPassword()))
+				.willReturn("encodedPassword");
+		given(mockSignedUserRepo.save(testUser))
+				.willReturn(testUser);
+
+		ResponseEntity<String> response = signedUserService.userSignUp(testUser);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+		assertThat(response.getBody()).isEqualTo("testUser");
+		verify(mockSignedUserRepo, times(1)).save(testUser);
+
+	}
+}
