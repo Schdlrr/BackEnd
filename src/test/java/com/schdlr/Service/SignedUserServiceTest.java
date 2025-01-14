@@ -85,4 +85,14 @@ public class SignedUserServiceTest {
 
 		assertThat(isValidEmail).isTrue();
 	}
+
+	@Test
+	public void SignedUserService_testIsUsedEmail_ReturnsTrue(){
+		given(mockSignedUserRepo.findByEmail(testUser.getEmail()))
+				.willReturn(Optional.of(testUser));
+
+		boolean isUsedEmail = signedUserService.isUsedEmail(testUser.getEmail());
+
+		assertThat(isUsedEmail).isTrue();
+	}
 }
