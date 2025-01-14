@@ -1,15 +1,13 @@
 package com.schdlr.dto;
 
-import java.util.Collection;
-
-
+import com.schdlr.model.BusinessOwner;
+import com.schdlr.model.SignedUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collections;
 
-import com.schdlr.model.BusinessOwner;
-import com.schdlr.model.SignedUser;
+import java.util.Collection;
+import java.util.Collections;
 
 public class UserPrincipal implements UserDetails{
 

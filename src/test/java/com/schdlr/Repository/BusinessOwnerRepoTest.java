@@ -52,4 +52,19 @@ public class BusinessOwnerRepoTest {
 		assertThat(savedOwner.getBusinessName()).isEqualTo(businessOwner1.getBusinessName());
 		assertThat(savedOwner.getBusinessAddress()).isEqualTo(businessOwner1.getBusinessAddress());
 	}
+
+	@Test
+	public void BusinessOwnerRepoTest_testUpdate_ReturnsUpdatedOwner(){
+		BusinessOwner savedOwner = businessOwnerRepo.saveAndFlush(businessOwner1);
+
+		BusinessOwner updatedOwner = businessOwnerRepo.findByEmail(savedOwner.getEmail()).get();
+		updatedOwner.setUserName("Alexander Syla");
+		updatedOwner.setPassword("STOP");
+
+		BusinessOwner finalUser =  businessOwnerRepo.saveAndFlush(updatedOwner);
+
+		assertThat(finalUser).isNotNull();
+		assertThat(finalUser.getUserName()).isEqualTo("Alexander Syla");
+		assertThat(finalUser.getPassword()).isEqualTo("STOP");
+	}
 }

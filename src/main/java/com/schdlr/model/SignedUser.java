@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignedUser{
+public class SignedUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "signedUserSeq")
