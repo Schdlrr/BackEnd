@@ -82,7 +82,7 @@ public class BusinessOwnerRepoTest {
 	}
 
 	@Test
-	public void BusinessOwnerRepoTest_testFindUserByUsername_ReturnsOwner(){
+	public void BusinessOwnerRepoTest_testFindOwnerByUsername_ReturnsOwner(){
 		businessOwnerRepo.saveAll(Arrays.asList(businessOwner1,businessOwner2,businessOwner3));
 
 		BusinessOwner ErdiSylaOwner = businessOwnerRepo.findByUserName("Erdi Syla").get();
@@ -93,4 +93,20 @@ public class BusinessOwnerRepoTest {
 		assertThat(ErdiSylaOwner.getEmail()).isEqualTo(businessOwner1.getEmail());
 		assertThat(ErdiSylaOwner.getNumber()).isEqualTo(businessOwner1.getNumber());
 	}
+
+	@Test
+	public void BusinessOwnerRepoTest_testFindByEmail_ReturnsOwner(){
+		businessOwnerRepo.saveAll(Arrays.asList(businessOwner1,businessOwner2,businessOwner3));
+
+		BusinessOwner DreiLasyOwner = businessOwnerRepo.findByEmail("erdisyla8@gmail.com").get();
+
+		assertThat(DreiLasyOwner).isNotNull();
+		assertThat(DreiLasyOwner.getUserName()).isEqualTo(businessOwner3.getUserName());
+		assertThat(DreiLasyOwner.getPassword()).isEqualTo(businessOwner3.getPassword());
+		assertThat(DreiLasyOwner.getEmail()).isEqualTo(businessOwner3.getEmail());
+		assertThat(DreiLasyOwner.getNumber()).isEqualTo(businessOwner3.getNumber());
+		assertThat(DreiLasyOwner.getBusinessName()).isEqualTo(businessOwner3.getBusinessName());
+		assertThat(DreiLasyOwner.getBusinessAddress()).isEqualTo(businessOwner3.getBusinessAddress());
+	}
+
 }
