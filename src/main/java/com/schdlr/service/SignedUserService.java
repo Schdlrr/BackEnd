@@ -34,23 +34,22 @@ public class SignedUserService{
             user.setPassword(encoder.encode(user.getPassword()));
             repo.save(user);
             String userName = user.getUserName();
-            log.info("User signed up : " + userName);
+			 log.info("User signed up : {}", userName);
             return new ResponseEntity<>(userName,HttpStatus.CREATED);
         }
         
         }
 
     public ResponseEntity<String> userSignIn(SignedUser user) {
-        boolean usedEmail = usedEmail(user);
         SignedUser dbUser;
         try{
         dbUser = repo.findByEmail(user.getEmail()).get();
         }catch(NoSuchElementException e){
             return new ResponseEntity<>("User not present in database", HttpStatus.BAD_REQUEST);
         }
-        if (usedEmail && encoder.matches(user.getPassword(),dbUser.getPassword())) {
+        if (encoder.matches(user.getPassword(),dbUser.getPassword())) {
             String username = user.getUserName();
-            log.info("User signed in : " + username );
+			log.info("User signed in : {}", username);
             return new ResponseEntity<>(username,HttpStatus.OK);
         } else {
             return new ResponseEntity<>("The credentials that were used do not match to any user please try again",HttpStatus.UNAUTHORIZED);

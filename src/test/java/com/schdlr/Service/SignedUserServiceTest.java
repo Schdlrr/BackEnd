@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -54,6 +56,24 @@ public class SignedUserServiceTest {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 		assertThat(response.getBody()).isEqualTo("testUser");
 		verify(mockSignedUserRepo, times(1)).save(testUser);
+
+	}
+
+	@Test
+	public void SignedUserService_testSignIn_ReturnsCorrectResponse(){
+		given(mockSignedUserRepo.findByEmail("erdisyla6@gmail.com"))
+				.willReturn(Optional.of(testUser));
+		given(mockEncoder.matches(testUser.getPassword(),testUser.getPassword()))
+				.willReturn(true);
+
+
+		ResponseEntity<String> response = signedUserService.userSignIn(testUser);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getBody()).isEqualTo("testUser");
+		verify(mockSignedUserRepo, times(1)).findByEmail("erdisyla6@gmail.com");
+		verify(mockEncoder,times(1))
+				.matches(testUser.getPassword(),testUser.getPassword());
 
 	}
 }
