@@ -18,8 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 
 @Testable
@@ -58,6 +57,33 @@ public class SignedUserServiceTest {
 		assertThat(response.getBody()).isEqualTo("testUser");
 		verify(mockSignedUserRepo, times(1)).save(testUser);
 
+	}
+
+	@Test
+	public void SignedUserService_testSignUp_EmailIsNotValid(){
+		testUser.setEmail("this is not a valid email");
+
+		ResponseEntity<String> response = signedUserService.userSignUp(testUser);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
+		assertThat(response.getBody()).isEqualTo("Non valid email format entered.Please change email");
+		verifyNoInteractions(mockEncoder);
+		verifyNoInteractions(mockSignedUserRepo);
+	}
+
+	@Test
+	public void SignedUserService_testSignUp_EmailIsAlreadyInUse(){
+		given(mockSignedUserRepo.findByEmail(testUser.getEmail()))
+				.willReturn(Optional.of(testUser));
+
+		ResponseEntity<String> response = signedUserService.userSignUp(testUser);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+		assertThat(response.getBody())
+				.isEqualTo("Email is already used by another user. Please try to sign up with another kind of contact info");
+		verifyNoInteractions(mockEncoder);
 	}
 
 	@Test
