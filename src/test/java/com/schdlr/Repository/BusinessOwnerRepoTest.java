@@ -10,6 +10,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,6 +70,7 @@ public class BusinessOwnerRepoTest {
 		assertThat(finalUser.getUserName()).isEqualTo("Alexander Syla");
 		assertThat(finalUser.getPassword()).isEqualTo("STOP");
 	}
+
 	@Test
 	public void BusinessOwnerTest_testDelete_ReturnsNothing(){
 		BusinessOwner savedOwner = businessOwnerRepo. saveAndFlush(businessOwner1);
@@ -77,5 +79,18 @@ public class BusinessOwnerRepoTest {
 		Optional<BusinessOwner> deletedUser = businessOwnerRepo.findById(savedOwner.getId());
 
 		assertThat(deletedUser).isEmpty();
+	}
+
+	@Test
+	public void BusinessOwnerRepoTest_testFindUserByUsername_ReturnsOwner(){
+		businessOwnerRepo.saveAll(Arrays.asList(businessOwner1,businessOwner2,businessOwner3));
+
+		BusinessOwner ErdiSylaOwner = businessOwnerRepo.findByUserName("Erdi Syla").get();
+
+		assertThat(ErdiSylaOwner).isNotNull();
+		assertThat(ErdiSylaOwner.getUserName()).isEqualTo(businessOwner1.getUserName());
+		assertThat(ErdiSylaOwner.getPassword()).isEqualTo(businessOwner1.getPassword());
+		assertThat(ErdiSylaOwner.getEmail()).isEqualTo(businessOwner1.getEmail());
+		assertThat(ErdiSylaOwner.getNumber()).isEqualTo(businessOwner1.getNumber());
 	}
 }
