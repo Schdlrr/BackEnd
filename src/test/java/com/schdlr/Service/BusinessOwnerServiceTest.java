@@ -106,4 +106,38 @@ public class BusinessOwnerServiceTest {
 				.matches(testOwner.getPassword(),testOwner.getPassword());
 
 	}
+
+	@Test
+	public void BusinessOwnerService_testSignIn_ReturnsBadRequest(){
+		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
+				.willReturn(Optional.empty());
+
+		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+		assertThat(response.getBody()).isEqualTo("User not present in database");
+		verify(mockBusinessOwnerRepo, times(1)).findByEmail("erdisyla6@gmail.com");
+		verifyNoInteractions(mockEncoder);
+
+	}
+
+	@Test
+	public void BusinessOwnerService_testSignIn_ReturnsUnauthorized(){
+		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
+				.willReturn(Optional.of(testOwner));
+		given(mockEncoder.matches(testOwner.getPassword(),testOwner.getPassword()))
+				.willReturn(false);
+
+		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+		assertThat(response.getBody()).isEqualTo("The credentials that were used do not match to any user please try again");
+		verify(mockBusinessOwnerRepo, times(1)).findByEmail("erdisyla6@gmail.com");
+		verify(mockEncoder,times(1))
+				.matches(testOwner.getPassword(),testOwner.getPassword());
+	}
+
+
 }
