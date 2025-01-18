@@ -145,6 +145,13 @@ public class SignedUserServiceTest {
 	}
 
 	@Test
+	public void SignedUserService_testIsValidEmail_ReturnsFalse(){
+		boolean isValidEmail = signedUserService.isValidEmail("invalidemail.com");
+
+		assertThat(isValidEmail).isFalse();
+	}
+
+	@Test
 	public void SignedUserService_testIsUsedEmail_ReturnsTrue(){
 		given(mockSignedUserRepo.findByEmail(testUser.getEmail()))
 				.willReturn(Optional.of(testUser));
@@ -152,5 +159,15 @@ public class SignedUserServiceTest {
 		boolean isUsedEmail = signedUserService.isUsedEmail(testUser.getEmail());
 
 		assertThat(isUsedEmail).isTrue();
+	}
+
+	@Test
+	public void SignedUserService_testIsUsedEmail_ReturnsFalse(){
+		given(mockSignedUserRepo.findByEmail(testUser.getEmail()))
+				.willReturn(Optional.empty());
+
+		boolean isUsedEmail = signedUserService.isUsedEmail(testUser.getEmail());
+
+		assertThat(isUsedEmail).isFalse();
 	}
 }
