@@ -1,5 +1,12 @@
 package com.schdlr.util;
 
+import com.schdlr.model.TokenKey;
+import com.schdlr.repo.TokenKeyRepo;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Component;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -9,14 +16,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-
-import com.schdlr.model.TokenKey;
-import com.schdlr.repo.TokenKeyRepo;
-import org.springframework.stereotype.Component;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 
 @Component
 public class TokenExtractionUtil {
@@ -32,7 +31,6 @@ public class TokenExtractionUtil {
 
   private synchronized void loadKeys() {
     keys = tokenKeyRepo.findAll();
-    System.out.println("Keys loaded: " + keys);
   }
 
   public synchronized void refreshKeys() {

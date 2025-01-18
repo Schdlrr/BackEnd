@@ -1,28 +1,22 @@
 package com.schdlr.service;
 
+import com.schdlr.model.TokenKey;
+import com.schdlr.repo.TokenKeyRepo;
+import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import com.schdlr.model.TokenKey;
-import com.schdlr.repo.TokenKeyRepo;
-
-import org.springframework.stereotype.Service;
-
-import io.jsonwebtoken.Jwts;
 
 @Service
 public class JWTService {
 
-  TokenKeyRepo tokenKeyRepo;
+  private TokenKeyRepo tokenKeyRepo;
 
   public JWTService(TokenKeyRepo tokenKeyRepo) {
     this.tokenKeyRepo = tokenKeyRepo;
