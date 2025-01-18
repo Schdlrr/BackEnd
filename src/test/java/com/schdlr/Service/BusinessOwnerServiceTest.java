@@ -140,14 +140,21 @@ public class BusinessOwnerServiceTest {
 	}
 
 	@Test
-	public void SignedUserService_testIsValidEmail_ReturnsTrue(){
+	public void BusinessOwnerService_testIsValidEmail_ReturnsTrue(){
 		boolean isValidEmail = businessOwnerService.isValidEmail(testOwner.getEmail());
 
 		assertThat(isValidEmail).isTrue();
 	}
 
 	@Test
-	public void SignedUserService_testIsUsedEmail_ReturnsTrue(){
+	public void BusinessOwnerService_testIsValidEmail_ReturnsFalse(){
+		boolean isValidEmail = businessOwnerService.isValidEmail("invalidemail.com");
+
+		assertThat(isValidEmail).isFalse();
+	}
+
+	@Test
+	public void BusinessOwnerService_testIsUsedEmail_ReturnsTrue(){
 		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
 				.willReturn(Optional.of(testOwner));
 
@@ -156,6 +163,16 @@ public class BusinessOwnerServiceTest {
 		assertThat(isUsedEmail).isTrue();
 		verify(mockBusinessOwnerRepo,times(1))
 				.findByEmail(testOwner.getEmail());
+	}
+
+	@Test
+	public void BusinessOwnerService_testIsUsedEmail_ReturnsFalse(){
+		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
+				.willReturn(Optional.empty());
+
+		boolean isUsedEmail = businessOwnerService.isUsedEmail(testOwner.getEmail());
+
+		assertThat(isUsedEmail).isFalse();
 	}
 
 
