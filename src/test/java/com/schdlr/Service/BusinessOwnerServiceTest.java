@@ -88,5 +88,22 @@ public class BusinessOwnerServiceTest {
 		verifyNoInteractions(mockEncoder);
 	}
 
+	@Test
+	public void BusinessOwnerService_testSignIn_ReturnsCorrectResponse(){
+		given(mockBusinessOwnerRepo.findByEmail("erdisyla6@gmail.com"))
+				.willReturn(Optional.of(testOwner));
+		given(mockEncoder.matches(testOwner.getPassword(),testOwner.getPassword()))
+				.willReturn(true);
 
+
+		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(response.getBody()).isEqualTo("testOwner");
+		verify(mockBusinessOwnerRepo, times(1)).findByEmail("erdisyla6@gmail.com");
+		verify(mockEncoder,times(1))
+				.matches(testOwner.getPassword(),testOwner.getPassword());
+
+	}
 }

@@ -40,7 +40,6 @@ public class BusinessOwnerService {
     }
 
     public ResponseEntity<String> userSignIn(BusinessOwner BO) {
-        boolean usedEmail = usedEmail(BO);
         BusinessOwner dbUser;
         try {
             dbUser = BOrepo.findByEmail(BO.getEmail()).get();
