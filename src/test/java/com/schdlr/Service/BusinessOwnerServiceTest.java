@@ -14,10 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @Testable
 @ExtendWith(MockitoExtension.class)
@@ -58,5 +60,33 @@ public class BusinessOwnerServiceTest {
 		verify(mockBusinessOwnerRepo, times(1)).save(testOwner);
 
 	}
+
+	@Test
+	public void BusinessOwnerService_testSignUp_EmailIsNotValid(){
+		testOwner.setEmail("this is not a valid email");
+
+		ResponseEntity<String> response = businessOwnerService.userSignUp(testOwner);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
+		assertThat(response.getBody()).isEqualTo("Non valid email format entered.Please change email");
+		verifyNoInteractions(mockEncoder);
+		verifyNoInteractions(mockBusinessOwnerRepo);
+	}
+
+	@Test
+	public void BusinessOwnerService_testSignUp_EmailIsAlreadyInUse(){
+		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
+				.willReturn(Optional.of(testOwner));
+
+		ResponseEntity<String> response = businessOwnerService.userSignUp(testOwner);
+
+		assertThat(response).isNotNull();
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+		assertThat(response.getBody())
+				.isEqualTo("Email is already used by another user. Please try to sign up with another kind of contact info");
+		verifyNoInteractions(mockEncoder);
+	}
+
 
 }
