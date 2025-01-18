@@ -26,9 +26,9 @@ public class BusinessOwnerService {
 
 
     public ResponseEntity<String> userSignUp(BusinessOwner BO) {
-        if (!isValidEmail(BO)) {
+        if (!isValidEmail(BO.getEmail())) {
             return new ResponseEntity<>("Non valid email format entered.Please change email", HttpStatus.METHOD_NOT_ALLOWED);
-        } else if (usedEmail(BO)) {
+        } else if (isUsedEmail(BO.getEmail())) {
             return new ResponseEntity<>("Email is already used by another user. Please try to sign up with another kind of contact info", HttpStatus.CONFLICT);
         } else {
             BO.setPassword(encoder.encode(BO.getPassword()));
@@ -55,14 +55,14 @@ public class BusinessOwnerService {
         }
     }
 
-    public boolean isValidEmail(BusinessOwner BO) {
+    public boolean isValidEmail(String email) {
         String combinedRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern = Pattern.compile(combinedRegex);
-        return pattern.matcher(BO.getEmail()).matches();
+        return pattern.matcher(email).matches();
     }
 
-    public boolean usedEmail(BusinessOwner BO) {
-        return BOrepo.findByEmail(BO.getEmail()).isPresent();
+    public boolean isUsedEmail(String email) {
+        return BOrepo.findByEmail(email).isPresent();
     }
 
 }
