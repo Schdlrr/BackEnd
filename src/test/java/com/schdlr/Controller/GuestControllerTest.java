@@ -56,17 +56,14 @@ public class GuestControllerTest {
 
 	@Test
 	public void testSignIn_ReturnsInternalServerError() throws Exception {
-
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		given(guestUserService.signIn(any(HttpServletResponse.class)))
 				.willThrow(new RuntimeException("Unexpected error"));
-
 
 		mockMvc.perform(post("/api/guest/signin"))
 				.andExpect(status().isInternalServerError())
 				.andExpect(content().string("An internal server error occurred"));
 
-		// Verify that the service method was called once
 		verify(guestUserService, times(1)).signIn(any(HttpServletResponse.class));
 	}
 

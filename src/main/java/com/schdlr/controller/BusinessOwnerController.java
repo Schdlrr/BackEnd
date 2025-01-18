@@ -41,19 +41,18 @@ public class BusinessOwnerController{
 
     
      @PostMapping("/signup")
-    public ResponseEntity<String> userSignUp(@RequestBody BusinessOwner BO) {
-        return businessOwnerService.userSignUp(BO);
+    public ResponseEntity<String> signUp(@RequestBody BusinessOwner BO) {
+        return businessOwnerService.signUp(BO);
     }
 
     @PostMapping("/signin")
     public ResponseEntity<String> userSignIn(@RequestBody BusinessOwner BO, HttpServletResponse response) {
         String email = BO.getEmail();
+        ResponseEntity<String> responseEntity = businessOwnerService.signIn(BO.getUserName(),email, BO.getPassword());
         try {
-            // Generate tokens for the user
             String refreshToken = jwtService.generateRefreshToken(email,"BusinessOwner");
             String accessToken = jwtService.generateAccessToken(email,"BusinessOwner");
 
-            // Add tokens as cookies in the response
             tokenAndCookiesUtil.addCookie(response, "accessToken", accessToken, 30 * 60, true, false, "Strict");
             tokenAndCookiesUtil.addCookie(response, "refreshToken", refreshToken, 30 * 24 * 60 * 60, true, false,
                     "Strict");
@@ -65,7 +64,7 @@ public class BusinessOwnerController{
             return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return businessOwnerService.userSignIn(BO);
+        return responseEntity;
     }
 
 }

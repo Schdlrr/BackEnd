@@ -41,15 +41,14 @@ public class SignedUserService {
 
     }
 
-    public ResponseEntity<String> userSignIn(SignedUser user) {
+    public ResponseEntity<String> userSignIn(String username, String email,String password) {
         SignedUser dbUser;
         try {
-            dbUser = repo.findByEmail(user.getEmail()).get();
+            dbUser = repo.findByEmail(email).get();
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("User not present in database", HttpStatus.BAD_REQUEST);
         }
-        if (encoder.matches(user.getPassword(), dbUser.getPassword())) {
-            String username = user.getUserName();
+        if (encoder.matches(password, dbUser.getPassword())) {
             log.info("User signed in : {}", username);
             return new ResponseEntity<>(username, HttpStatus.OK);
         } else {

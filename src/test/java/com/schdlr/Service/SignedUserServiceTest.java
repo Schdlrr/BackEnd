@@ -94,7 +94,7 @@ public class SignedUserServiceTest {
 				.willReturn(true);
 
 
-		ResponseEntity<String> response = signedUserService.userSignIn(testUser);
+		ResponseEntity<String> response = signedUserService.userSignIn(testUser.getUserName(),testUser.getEmail(),testUser.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -110,7 +110,7 @@ public class SignedUserServiceTest {
 		given(mockSignedUserRepo.findByEmail(testUser.getEmail()))
 				.willReturn(Optional.empty());
 
-		ResponseEntity<String> response = signedUserService.userSignIn(testUser);
+		ResponseEntity<String> response = signedUserService.userSignIn(testUser.getUserName(),testUser.getEmail(),testUser.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -127,7 +127,7 @@ public class SignedUserServiceTest {
 		given(mockEncoder.matches(testUser.getPassword(),testUser.getPassword()))
 				.willReturn(false);
 
-		ResponseEntity<String> response = signedUserService.userSignIn(testUser);
+		ResponseEntity<String> response = signedUserService.userSignIn(testUser.getUserName(),testUser.getEmail(),testUser.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);

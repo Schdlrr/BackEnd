@@ -25,7 +25,7 @@ public class BusinessOwnerService {
     }
 
 
-    public ResponseEntity<String> userSignUp(BusinessOwner BO) {
+    public ResponseEntity<String> signUp(BusinessOwner BO) {
         if (!isValidEmail(BO.getEmail())) {
             return new ResponseEntity<>("Non valid email format entered.Please change email", HttpStatus.METHOD_NOT_ALLOWED);
         } else if (isUsedEmail(BO.getEmail())) {
@@ -39,15 +39,14 @@ public class BusinessOwnerService {
         }
     }
 
-    public ResponseEntity<String> userSignIn(BusinessOwner BO) {
+    public ResponseEntity<String> signIn(String username, String email,String password) {
         BusinessOwner dbUser;
         try {
-            dbUser = BOrepo.findByEmail(BO.getEmail()).get();
+            dbUser = BOrepo.findByEmail(email).get();
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>("User not present in database", HttpStatus.BAD_REQUEST);
         }
-        if (encoder.matches(BO.getPassword(), dbUser.getPassword())) {
-            String username = BO.getUserName();
+        if (encoder.matches(password, dbUser.getPassword())) {
             log.info("Business Owner signed in : {}", username);
             return new ResponseEntity<>(username, HttpStatus.OK);
         } else {

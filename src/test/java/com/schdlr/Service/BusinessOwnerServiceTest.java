@@ -51,7 +51,7 @@ public class BusinessOwnerServiceTest {
 		given(mockBusinessOwnerRepo.save(testOwner))
 				.willReturn(testOwner);
 
-		ResponseEntity<String> response = businessOwnerService.userSignUp(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signUp(testOwner);
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -65,7 +65,7 @@ public class BusinessOwnerServiceTest {
 	public void BusinessOwnerService_testSignUp_EmailIsNotValid(){
 		testOwner.setEmail("this is not a valid email");
 
-		ResponseEntity<String> response = businessOwnerService.userSignUp(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signUp(testOwner);
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.METHOD_NOT_ALLOWED);
@@ -79,7 +79,7 @@ public class BusinessOwnerServiceTest {
 		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
 				.willReturn(Optional.of(testOwner));
 
-		ResponseEntity<String> response = businessOwnerService.userSignUp(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signUp(testOwner);
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
@@ -96,7 +96,7 @@ public class BusinessOwnerServiceTest {
 				.willReturn(true);
 
 
-		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signIn(testOwner.getUserName(),testOwner.getEmail(),testOwner.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -112,7 +112,7 @@ public class BusinessOwnerServiceTest {
 		given(mockBusinessOwnerRepo.findByEmail(testOwner.getEmail()))
 				.willReturn(Optional.empty());
 
-		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signIn(testOwner.getUserName(),testOwner.getEmail(),testOwner.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -129,7 +129,7 @@ public class BusinessOwnerServiceTest {
 		given(mockEncoder.matches(testOwner.getPassword(),testOwner.getPassword()))
 				.willReturn(false);
 
-		ResponseEntity<String> response = businessOwnerService.userSignIn(testOwner);
+		ResponseEntity<String> response = businessOwnerService.signIn(testOwner.getUserName(),testOwner.getEmail(),testOwner.getPassword());
 
 		assertThat(response).isNotNull();
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);

@@ -1,27 +1,20 @@
 package com.schdlr.controller;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 import com.schdlr.model.SignedUser;
 import com.schdlr.service.JWTService;
 import com.schdlr.service.SignedUserService;
 import com.schdlr.util.TokenAndCookiesUtil;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @Slf4j
 @RestController
@@ -58,6 +51,7 @@ public class SignedUserController{
     public ResponseEntity<String> userSignIn(@RequestBody SignedUser user, HttpServletResponse response,
             HttpServletRequest request) {
         String email = user.getEmail();
+        ResponseEntity<String> responseEntity = service.userSignIn(user.getUserName(),email,user.getPassword());
         try {
             // Generate tokens for the user
             String refreshToken = jwtService.generateRefreshToken(email,"SignedUser");
@@ -72,10 +66,10 @@ public class SignedUserController{
             return new ResponseEntity<>("Algorithm for token does not exist", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (InvalidKeySpecException w) {
             log.error("The key sppec used is invalid", w);
-            return new ResponseEntity<>("The key sppec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("The key spec used is invalid" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return service.userSignIn(user);
+        return responseEntity;
     }
 
 }
